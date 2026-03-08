@@ -111,7 +111,7 @@ export function GrowthHacks() {
           </CardContent>
         </Card>
       </div>
-      <div className="lg:col-span-3">
+      <div className="md:col-span-3">
         {!playbook ? (
           <Card className="border-dashed border-border bg-card">
             <CardContent className="flex flex-col items-center justify-center py-16 sm:py-24 text-center px-4">

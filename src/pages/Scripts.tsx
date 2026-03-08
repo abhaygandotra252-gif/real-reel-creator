@@ -127,7 +127,7 @@ export default function Scripts() {
                   <CardContent className="flex items-center justify-between p-4">
                     <div className="flex-1 min-w-0">
                       <h4 className="font-medium text-foreground truncate">{s.title}</h4>
-                      <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+                      <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                         {s.products?.name && <span className="text-foreground/70">{s.products.name}</span>}
                         <span className="rounded-full bg-primary/10 px-2 py-0.5 text-primary">{styleLabel(s.video_style)}</span>
                         <span>{s.duration}</span>

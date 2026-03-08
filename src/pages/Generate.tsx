@@ -217,9 +217,9 @@ export default function Generate() {
               ) : script ? (
                 <motion.div key="result" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                   {/* Title + Actions */}
-                  <div className="flex items-center justify-between">
-                    <h2 className="font-display text-xl font-bold text-foreground">{script.title}</h2>
-                    <div className="flex gap-2">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">{script.title}</h2>
+                    <div className="flex gap-2 shrink-0">
                       <Button variant="outline" size="sm" className="gap-1" onClick={() => copyToClipboard(fullScriptText)}>
                         <Copy className="h-4 w-4" /> Copy All
                       </Button>
