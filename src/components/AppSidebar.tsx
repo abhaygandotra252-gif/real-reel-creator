@@ -91,7 +91,7 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
             to="/settings"
             onClick={onClose}
             title="Settings"
-            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors justify-center lg:justify-start"
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors"
           >
             <Settings className="h-5 w-5 shrink-0" />
             <span className="hidden lg:block">Settings</span>
