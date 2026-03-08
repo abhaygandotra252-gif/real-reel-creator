@@ -32,3 +32,6 @@ verify_jwt = false
 
 [functions.generate-growth-hacks]
 verify_jwt = false
+
+[functions.generate-prospect-search]
+verify_jwt = false

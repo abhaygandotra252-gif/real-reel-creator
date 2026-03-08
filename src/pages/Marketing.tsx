@@ -2,7 +2,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
-import { Image, MessageSquare, ImageIcon, Mail, Rocket, Twitter, Search, Megaphone, Layout, FolderOpen, Zap } from "lucide-react";
+import { Image, MessageSquare, ImageIcon, Mail, Rocket, Twitter, Search, Megaphone, Layout, FolderOpen, Zap, Users } from "lucide-react";
 import { CarouselGenerator } from "@/components/marketing/CarouselGenerator";
 import { CaptionGenerator } from "@/components/marketing/CaptionGenerator";
 import { MockupGenerator } from "@/components/marketing/MockupGenerator";
@@ -14,6 +14,7 @@ import { AdCopyGenerator } from "@/components/marketing/AdCopyGenerator";
 import { LandingCopyGenerator } from "@/components/marketing/LandingCopyGenerator";
 import { DirectorySubmitter } from "@/components/marketing/DirectorySubmitter";
 import { GrowthHacks } from "@/components/marketing/GrowthHacks";
+import { ProspectFinder } from "@/components/marketing/ProspectFinder";
 
 const TABS = [
   { value: "launch", label: "Launch", icon: Rocket },
@@ -27,6 +28,7 @@ const TABS = [
   { value: "landing", label: "Landing", icon: Layout },
   { value: "mockups", label: "Mockups", icon: ImageIcon },
   { value: "outreach", label: "Outreach", icon: Mail },
+  { value: "prospects", label: "Prospects", icon: Users },
 ];
 
 export default function Marketing() {
@@ -65,6 +67,7 @@ export default function Marketing() {
           <TabsContent value="landing"><LandingCopyGenerator /></TabsContent>
           <TabsContent value="mockups"><MockupGenerator /></TabsContent>
           <TabsContent value="outreach"><OutreachGenerator /></TabsContent>
+          <TabsContent value="prospects"><ProspectFinder /></TabsContent>
         </Tabs>
       </motion.div>
     </AppLayout>
