@@ -39,7 +39,7 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
         )}
       >
         {/* Logo + Close */}
-        <div className="flex h-16 items-center justify-between border-b border-border px-3 lg:px-6">
+        <div className="flex h-16 items-center justify-between border-b border-border px-6">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg gradient-primary">
               <Sparkles className="h-5 w-5 text-primary-foreground" />
