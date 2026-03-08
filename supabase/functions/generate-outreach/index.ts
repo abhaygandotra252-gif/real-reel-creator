@@ -16,7 +16,7 @@ serve(async (req) => {
     const typeInstructions: Record<string, string> = {
       "influencer-outreach": "Write a warm, professional influencer collaboration outreach email. Include: subject line, greeting, why they're a great fit, collaboration offer, and sign-off.",
       "customer-followup": "Write a friendly customer follow-up email after purchase. Include: subject line, thank you, usage tips, request for review, and support info.",
-      "launch-announcement": "Write an exciting product launch announcement email. Include: subject line, teaser hook, key features reveal, launch offer, and CTA.",
+      "launch-announcement": "Write an engaging product launch announcement email. Include: subject line, teaser hook, key features reveal, launch offer, and CTA.",
       "collab-proposal": "Write a brand collaboration proposal email. Include: subject line, brand intro, mutual value proposition, collaboration ideas, and next steps.",
     };
 
@@ -31,7 +31,8 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are an expert email copywriter and outreach specialist.
+            content: `You are an expert email copywriter and outreach specialist. Write in a clear, professional tone. No emojis. No filler phrases like "game-changer" or "revolutionary." Sound like a human expert, not a marketing bot.
+
 ${typeInstructions[template_type] || typeInstructions["influencer-outreach"]}
 
 Product: ${product_name}
@@ -74,16 +75,8 @@ Benefits: ${(benefits || []).join(", ") || "N/A"}`,
     });
 
     if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Rate limited. Please try again." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "AI credits exhausted." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
+      if (response.status === 429) return new Response(JSON.stringify({ error: "Rate limited. Please try again." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (response.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       const t = await response.text();
       throw new Error(`AI error ${response.status}: ${t}`);
     }
@@ -92,13 +85,9 @@ Benefits: ${(benefits || []).join(", ") || "N/A"}`,
     const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
     const templates = JSON.parse(toolCall.function.arguments);
 
-    return new Response(JSON.stringify(templates), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(JSON.stringify(templates), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("generate-outreach error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

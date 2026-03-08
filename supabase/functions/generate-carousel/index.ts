@@ -20,7 +20,8 @@ serve(async (req) => {
       "before-after": "Create before/after comparison slides showing the transformation the product enables.",
     };
 
-    const systemPrompt = `You are a social media content strategist creating carousel slide content. 
+    const systemPrompt = `You are a social media content strategist creating carousel slide content. Write in a clear, professional tone. No emojis in the slide text. No filler phrases like "game-changer" or "revolutionary." Sound like a human expert, not a marketing bot.
+
 Return structured data for ${slide_count || 5} carousel slides.
 Theme: ${themeInstructions[theme] || themeInstructions["product-benefits"]}
 
@@ -57,7 +58,6 @@ Benefits: ${(benefits || []).join(", ") || "N/A"}`;
                       headline: { type: "string" },
                       body: { type: "string" },
                       tagline: { type: "string" },
-                      emoji: { type: "string", description: "A single relevant emoji" },
                     },
                     required: ["headline", "body", "tagline"],
                     additionalProperties: false,
@@ -74,16 +74,8 @@ Benefits: ${(benefits || []).join(", ") || "N/A"}`;
     });
 
     if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Rate limited. Please try again in a moment." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "AI credits exhausted. Please add funds." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
+      if (response.status === 429) return new Response(JSON.stringify({ error: "Rate limited. Please try again in a moment." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (response.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted. Please add funds." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       const t = await response.text();
       throw new Error(`AI error ${response.status}: ${t}`);
     }
@@ -92,13 +84,9 @@ Benefits: ${(benefits || []).join(", ") || "N/A"}`;
     const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
     const slides = JSON.parse(toolCall.function.arguments);
 
-    return new Response(JSON.stringify(slides), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(JSON.stringify(slides), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("generate-carousel error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

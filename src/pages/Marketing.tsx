@@ -2,7 +2,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
-import { Image, MessageSquare, ImageIcon, Mail, Rocket, Twitter, Search, Megaphone, Layout } from "lucide-react";
+import { Image, MessageSquare, ImageIcon, Mail, Rocket, Twitter, Search, Megaphone, Layout, FolderOpen, Zap } from "lucide-react";
 import { CarouselGenerator } from "@/components/marketing/CarouselGenerator";
 import { CaptionGenerator } from "@/components/marketing/CaptionGenerator";
 import { MockupGenerator } from "@/components/marketing/MockupGenerator";
@@ -12,9 +12,13 @@ import { ThreadBuilder } from "@/components/marketing/ThreadBuilder";
 import { SEOGenerator } from "@/components/marketing/SEOGenerator";
 import { AdCopyGenerator } from "@/components/marketing/AdCopyGenerator";
 import { LandingCopyGenerator } from "@/components/marketing/LandingCopyGenerator";
+import { DirectorySubmitter } from "@/components/marketing/DirectorySubmitter";
+import { GrowthHacks } from "@/components/marketing/GrowthHacks";
 
 const TABS = [
   { value: "launch", label: "Launch", icon: Rocket },
+  { value: "directories", label: "Directories", icon: FolderOpen },
+  { value: "growth", label: "Growth", icon: Zap },
   { value: "threads", label: "Threads", icon: Twitter },
   { value: "captions", label: "Captions", icon: MessageSquare },
   { value: "carousels", label: "Carousels", icon: Image },
@@ -31,7 +35,7 @@ export default function Marketing() {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-1">Marketing Toolkit</h1>
         <p className="text-sm sm:text-base text-muted-foreground mb-6 md:mb-8">
-          Zero-to-launch growth suite — generate copy for every channel from one product
+          Zero-to-launch growth suite — generate copy, submit to directories, and deploy unconventional tactics
         </p>
 
         <Tabs defaultValue="launch" className="space-y-6">
@@ -51,6 +55,8 @@ export default function Marketing() {
           </ScrollArea>
 
           <TabsContent value="launch"><LaunchCopyGenerator /></TabsContent>
+          <TabsContent value="directories"><DirectorySubmitter /></TabsContent>
+          <TabsContent value="growth"><GrowthHacks /></TabsContent>
           <TabsContent value="threads"><ThreadBuilder /></TabsContent>
           <TabsContent value="captions"><CaptionGenerator /></TabsContent>
           <TabsContent value="carousels"><CarouselGenerator /></TabsContent>

@@ -31,7 +31,8 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are an expert startup launch copywriter who has helped hundreds of products launch successfully.
+            content: `You are an expert startup launch copywriter who has helped hundreds of products launch successfully. Write in a clear, professional tone. No emojis. No filler phrases like "game-changer" or "revolutionary." Sound like a human expert, not a marketing bot.
+
 ${platformInstructions[platform] || platformInstructions["producthunt"]}
 
 Product: ${product_name}
