@@ -55,7 +55,7 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 space-y-1 px-2 py-4 lg:px-3">
+        <nav className="flex-1 space-y-1 px-3 py-4">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
