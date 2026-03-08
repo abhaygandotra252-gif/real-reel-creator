@@ -67,7 +67,7 @@ export function OutreachGenerator() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast({ title: "Copied to clipboard! 📋" });
+    toast({ title: "Copied to clipboard" });
   };
 
   return (
