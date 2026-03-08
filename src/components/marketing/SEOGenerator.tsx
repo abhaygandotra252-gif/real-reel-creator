@@ -39,7 +39,7 @@ export function SEOGenerator() {
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setSeoData(data);
-      toast({ title: "SEO content generated! 🔍" });
+      toast({ title: "SEO content generated" });
     } catch (err: any) {
       toast({ title: "Generation failed", description: err.message, variant: "destructive" });
     } finally { setIsGenerating(false); }
