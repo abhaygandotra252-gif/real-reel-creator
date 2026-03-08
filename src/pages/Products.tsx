@@ -152,7 +152,7 @@ export default function Products() {
                 <div><Label>Description</Label><Textarea className="mt-1" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="What does this product do?" /></div>
                 <div><Label>Key Features (one per line)</Label><Textarea className="mt-1" value={form.key_features} onChange={e => setForm(f => ({ ...f, key_features: e.target.value }))} placeholder="Hydrating formula&#10;Vitamin C enriched&#10;SPF 50 protection" /></div>
                 <div><Label>Benefits (one per line)</Label><Textarea className="mt-1" value={form.benefits} onChange={e => setForm(f => ({ ...f, benefits: e.target.value }))} placeholder="Glowing skin in 7 days&#10;Reduces dark spots" /></div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div><Label>Target Audience</Label><Input className="mt-1" value={form.target_audience} onChange={e => setForm(f => ({ ...f, target_audience: e.target.value }))} placeholder="Women 25-40" /></div>
                   <div><Label>Niche / Category</Label><Input className="mt-1" value={form.niche_category} onChange={e => setForm(f => ({ ...f, niche_category: e.target.value }))} placeholder="Skincare" /></div>
                 </div>
