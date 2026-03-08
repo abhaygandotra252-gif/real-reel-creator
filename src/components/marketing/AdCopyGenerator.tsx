@@ -12,8 +12,8 @@ type AdVariation = { angle: string; headline: string; description: string; prima
 type AdData = { variations: AdVariation[]; ab_test_tips: string[] };
 
 const AD_PLATFORMS = [
-  { value: "google", label: "Google Ads", icon: "🔍" },
-  { value: "meta", label: "Meta (FB/IG)", icon: "📱" },
+  { value: "google", label: "Google Ads" },
+  { value: "meta", label: "Meta (FB/IG)" },
 ];
 
 export function AdCopyGenerator() {
