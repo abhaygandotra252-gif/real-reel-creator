@@ -21,7 +21,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* md = icon sidebar (w-16), lg = full sidebar (w-64) */}
-      <main className="md:ml-16 lg:ml-64 min-h-screen">
+      <main className="md:ml-64 min-h-screen">
         <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 sm:py-6 md:px-8 md:py-8">
           {children}
         </div>
