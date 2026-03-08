@@ -51,7 +51,7 @@ export function LaunchCopyGenerator() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast({ title: "Copied! 📋" });
+    toast({ title: "Copied to clipboard" });
   };
 
   const copyAll = () => {
