@@ -47,7 +47,7 @@ export function SEOGenerator() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast({ title: "Copied! 📋" });
+    toast({ title: "Copied to clipboard" });
   };
 
   return (
