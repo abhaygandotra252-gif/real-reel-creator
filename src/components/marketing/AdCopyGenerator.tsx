@@ -42,7 +42,7 @@ export function AdCopyGenerator() {
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setAdData(data);
-      toast({ title: "Ad copy generated! 📢" });
+      toast({ title: "Ad copy generated" });
     } catch (err: any) {
       toast({ title: "Generation failed", description: err.message, variant: "destructive" });
     } finally { setIsGenerating(false); }
