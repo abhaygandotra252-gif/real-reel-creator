@@ -7,7 +7,7 @@ import Index from "./pages/Index";
 import Products from "./pages/Products";
 import Generate from "./pages/Generate";
 import Scripts from "./pages/Scripts";
-import Studio from "./pages/Studio";
+import Marketing from "./pages/Marketing";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
