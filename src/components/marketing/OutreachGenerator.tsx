@@ -57,7 +57,7 @@ export function OutreachGenerator() {
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setTemplates(data.templates);
-      toast({ title: "Templates generated! 📧" });
+      toast({ title: "Templates generated" });
     } catch (err: any) {
       toast({ title: "Generation failed", description: err.message, variant: "destructive" });
     } finally {
