@@ -2,7 +2,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
-import { Image, MessageSquare, ImageIcon, Mail, Rocket, Twitter, Search, Megaphone, Layout, FolderOpen, Zap } from "lucide-react";
+import { Image, MessageSquare, ImageIcon, Mail, Rocket, Twitter, Search, Megaphone, Layout, FolderOpen, Zap, Users } from "lucide-react";
 import { CarouselGenerator } from "@/components/marketing/CarouselGenerator";
 import { CaptionGenerator } from "@/components/marketing/CaptionGenerator";
 import { MockupGenerator } from "@/components/marketing/MockupGenerator";
