@@ -110,8 +110,8 @@ export default function Generate() {
   return (
     <AppLayout>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <h1 className="font-display text-3xl font-bold text-foreground mb-1">Generate Script</h1>
-        <p className="text-muted-foreground mb-8">AI-powered UGC script generator for authentic, converting content</p>
+        <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-1">Generate Script</h1>
+        <p className="text-sm sm:text-base text-muted-foreground mb-6 md:mb-8">AI-powered UGC script generator for authentic, converting content</p>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
           {/* Config Panel */}

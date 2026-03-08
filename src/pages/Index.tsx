@@ -95,7 +95,7 @@ export default function Index() {
       {/* Recent Scripts */}
       <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.5 }}>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-display text-xl font-semibold text-foreground">Recent Scripts</h2>
+          <h2 className="font-display text-lg sm:text-xl font-semibold text-foreground">Recent Scripts</h2>
           <Link to="/scripts" className="flex items-center gap-1 text-sm text-primary hover:underline">
             View all <ArrowRight className="h-4 w-4" />
           </Link>

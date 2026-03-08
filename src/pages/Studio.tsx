@@ -21,7 +21,7 @@ export default function Studio() {
               Connect your HeyGen or Synthesia API key to generate realistic AI avatar videos directly from your scripts.
               Select a script, choose an avatar, and create professional UGC videos in minutes.
             </p>
-            <div className="mt-6 flex gap-3">
+            <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row gap-3">
               <Button variant="outline" className="gap-2" disabled>
                 <Settings className="h-4 w-4" /> Connect API Key
               </Button>

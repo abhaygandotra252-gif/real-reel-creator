@@ -80,8 +80,8 @@ export default function Scripts() {
   return (
     <AppLayout>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <h1 className="font-display text-3xl font-bold text-foreground mb-1">Script Library</h1>
-        <p className="text-muted-foreground mb-6">Browse and manage all your generated scripts</p>
+        <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-1">Script Library</h1>
+        <p className="text-sm sm:text-base text-muted-foreground mb-6">Browse and manage all your generated scripts</p>
 
         {/* Filters */}
         <div className="mb-6 flex flex-col gap-3 sm:flex-row">
