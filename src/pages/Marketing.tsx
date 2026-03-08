@@ -14,6 +14,7 @@ import { AdCopyGenerator } from "@/components/marketing/AdCopyGenerator";
 import { LandingCopyGenerator } from "@/components/marketing/LandingCopyGenerator";
 import { DirectorySubmitter } from "@/components/marketing/DirectorySubmitter";
 import { GrowthHacks } from "@/components/marketing/GrowthHacks";
+import { ProspectFinder } from "@/components/marketing/ProspectFinder";
 
 const TABS = [
   { value: "launch", label: "Launch", icon: Rocket },
