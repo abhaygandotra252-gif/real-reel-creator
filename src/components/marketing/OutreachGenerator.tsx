@@ -16,10 +16,10 @@ type Template = {
 };
 
 const TEMPLATE_TYPES = [
-  { value: "influencer-outreach", label: "Influencer Outreach", icon: "🤝" },
-  { value: "customer-followup", label: "Customer Follow-Up", icon: "💌" },
-  { value: "launch-announcement", label: "Launch Announcement", icon: "🚀" },
-  { value: "collab-proposal", label: "Collab Proposal", icon: "🤲" },
+  { value: "influencer-outreach", label: "Influencer Outreach" },
+  { value: "customer-followup", label: "Customer Follow-Up" },
+  { value: "launch-announcement", label: "Launch Announcement" },
+  { value: "collab-proposal", label: "Collab Proposal" },
 ];
 
 export function OutreachGenerator() {
