@@ -8,7 +8,7 @@ const navItems = [
   { icon: Package, label: "Products", path: "/products" },
   { icon: Sparkles, label: "Generate Script", path: "/generate" },
   { icon: Library, label: "Script Library", path: "/scripts" },
-  { icon: Video, label: "Video Studio", path: "/studio" },
+  { icon: Megaphone, label: "Marketing", path: "/marketing" },
 ];
 
 interface AppSidebarProps {
