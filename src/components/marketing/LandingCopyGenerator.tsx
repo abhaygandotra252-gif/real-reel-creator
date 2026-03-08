@@ -70,7 +70,7 @@ export function LandingCopyGenerator() {
       ...landingData.cta_variations.map((c, i) => `${i + 1}. ${c}`),
     ].join("\n");
     navigator.clipboard.writeText(all);
-    toast({ title: "All copy copied! 📋" });
+    toast({ title: "All copy copied" });
   };
 
   return (
