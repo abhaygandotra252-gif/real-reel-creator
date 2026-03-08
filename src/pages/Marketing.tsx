@@ -67,6 +67,7 @@ export default function Marketing() {
           <TabsContent value="landing"><LandingCopyGenerator /></TabsContent>
           <TabsContent value="mockups"><MockupGenerator /></TabsContent>
           <TabsContent value="outreach"><OutreachGenerator /></TabsContent>
+          <TabsContent value="prospects"><ProspectFinder /></TabsContent>
         </Tabs>
       </motion.div>
     </AppLayout>
