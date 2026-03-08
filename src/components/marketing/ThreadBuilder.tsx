@@ -11,10 +11,10 @@ import { Sparkles, Copy, RefreshCw, Twitter } from "lucide-react";
 type Tweet = { number: number; content: string; char_count: number };
 
 const THREAD_TYPES = [
-  { value: "launch", label: "Product Launch", icon: "🚀" },
-  { value: "build-in-public", label: "Build in Public", icon: "🔨" },
-  { value: "how-i-built", label: "How I Built This", icon: "⚙️" },
-  { value: "tips", label: "Tips & Value", icon: "💡" },
+  { value: "launch", label: "Product Launch" },
+  { value: "build-in-public", label: "Build in Public" },
+  { value: "how-i-built", label: "How I Built This" },
+  { value: "tips", label: "Tips & Value" },
 ];
 
 export function ThreadBuilder() {
