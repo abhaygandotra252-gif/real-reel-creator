@@ -79,7 +79,7 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
                   />
                 )}
                 <item.icon className="relative z-10 h-5 w-5 shrink-0" />
-                <span className="relative z-10 hidden lg:block">{item.label}</span>
+                <span className="relative z-10">{item.label}</span>
               </Link>
             );
           })}
