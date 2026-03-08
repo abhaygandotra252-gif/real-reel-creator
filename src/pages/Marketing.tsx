@@ -28,6 +28,7 @@ const TABS = [
   { value: "landing", label: "Landing", icon: Layout },
   { value: "mockups", label: "Mockups", icon: ImageIcon },
   { value: "outreach", label: "Outreach", icon: Mail },
+  { value: "prospects", label: "Prospects", icon: Users },
 ];
 
 export default function Marketing() {
