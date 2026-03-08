@@ -200,7 +200,7 @@ export default function Generate() {
           </div>
 
           {/* Script Output */}
-          <div className="lg:col-span-3">
+          <div className="md:col-span-3">
             <AnimatePresence mode="wait">
               {isGenerating ? (
                 <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
