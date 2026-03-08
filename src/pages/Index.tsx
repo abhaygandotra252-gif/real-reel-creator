@@ -54,20 +54,20 @@ export default function Index() {
       </motion.div>
 
       {/* Quick Create */}
-      <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.1 }} className="mb-8">
+      <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.1 }} className="mb-6 md:mb-8">
         <Link to="/generate">
           <Card className="group cursor-pointer overflow-hidden border-primary/20 bg-card transition-all hover:border-primary/40 hover:glow-primary">
-            <CardContent className="flex items-center justify-between p-6">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl gradient-primary">
-                  <Sparkles className="h-6 w-6 text-primary-foreground" />
+            <CardContent className="flex items-center justify-between p-4 sm:p-6">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl gradient-primary">
+                  <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-primary-foreground" />
                 </div>
                 <div>
-                  <h3 className="font-display text-lg font-semibold text-foreground">Generate New Script</h3>
-                  <p className="text-sm text-muted-foreground">Select a product and let AI craft the perfect UGC script</p>
+                  <h3 className="font-display text-base sm:text-lg font-semibold text-foreground">Generate New Script</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Select a product and let AI craft the perfect UGC script</p>
                 </div>
               </div>
-              <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
+              <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary hidden sm:block" />
             </CardContent>
           </Card>
         </Link>
