@@ -57,7 +57,7 @@ export function LaunchCopyGenerator() {
   const copyAll = () => {
     const all = sections.map(s => `## ${s.label}\n${s.content}`).join("\n\n");
     navigator.clipboard.writeText(all);
-    toast({ title: "All sections copied! 📋" });
+    toast({ title: "All sections copied" });
   };
 
   return (
