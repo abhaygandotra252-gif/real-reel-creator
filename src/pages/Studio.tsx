@@ -12,8 +12,8 @@ export default function Studio() {
         <p className="text-sm sm:text-base text-muted-foreground mb-6 md:mb-8">Generate AI avatar videos from your scripts</p>
 
         <Card className="border-dashed border-border bg-card">
-          <CardContent className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-secondary">
+          <CardContent className="flex flex-col items-center justify-center py-12 sm:py-20 text-center px-4">
+            <div className="mb-4 sm:mb-6 flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl bg-secondary">
               <Video className="h-10 w-10 text-muted-foreground" />
             </div>
             <h3 className="font-display text-2xl font-bold text-foreground">Coming Soon</h3>
