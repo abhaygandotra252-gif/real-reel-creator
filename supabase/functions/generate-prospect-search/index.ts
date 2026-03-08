@@ -73,11 +73,12 @@ Generate a complete prospect-finding playbook for this product on ${platform}.`;
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
+        max_tokens: 8000,
       }),
     });
 
@@ -102,10 +103,23 @@ Generate a complete prospect-finding playbook for this product on ${platform}.`;
 
     let parsed;
     try {
-      const jsonMatch = content.match(/\{[\s\S]*\}/);
-      parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
+      // Clean common AI artifacts before parsing
+      let cleaned = content.replace(/```json\s*/g, "").replace(/```\s*/g, "");
+      // Remove stray non-whitespace between JSON tokens (e.g. "msg" randomly inserted)
+      cleaned = cleaned.replace(/(["\d\]}])\s*[a-zA-Z]{1,5}\s+(\[{"])/g, "$1 $2");
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        parsed = JSON.parse(jsonMatch[0]);
+      }
     } catch {
-      parsed = null;
+      // Try a second pass: strip all control chars and retry
+      try {
+        const stripped = content.replace(/[^\x20-\x7E\n\r\t]/g, "");
+        const jsonMatch = stripped.match(/\{[\s\S]*\}/);
+        parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
+      } catch {
+        parsed = null;
+      }
     }
 
     if (!parsed) {
