@@ -26,3 +26,9 @@ verify_jwt = false
 
 [functions.generate-landing-copy]
 verify_jwt = false
+
+[functions.generate-directory-listing]
+verify_jwt = false
+
+[functions.generate-growth-hacks]
+verify_jwt = false

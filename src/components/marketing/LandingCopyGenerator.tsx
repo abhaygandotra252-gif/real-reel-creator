@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Sparkles, Copy, RefreshCw, Layout, HelpCircle, Star, MousePointer } from "lucide-react";
 
-type Feature = { title: string; description: string; emoji: string };
+type Feature = { title: string; description: string };
 type FAQ = { question: string; answer: string };
 type LandingData = {
   hero_headline: string; hero_subheadline: string; features: Feature[];
