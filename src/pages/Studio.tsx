@@ -230,6 +230,12 @@ export default function Studio() {
                     <><Sparkles className="h-5 w-5" /> Generate Video</>
                   )}
                 </Button>
+                {isGenerating && (
+                  <div className="space-y-1">
+                    <Progress value={progress} className="h-2" />
+                    <p className="text-xs text-muted-foreground text-center">{progress}% — Rendering frames...</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
