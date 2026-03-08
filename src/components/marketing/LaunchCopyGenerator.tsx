@@ -11,10 +11,10 @@ import { Sparkles, Copy, RefreshCw, Rocket, Lightbulb } from "lucide-react";
 type Section = { label: string; content: string; char_count: number; tip: string };
 
 const PLATFORMS = [
-  { value: "producthunt", label: "Product Hunt", icon: "🚀" },
-  { value: "reddit", label: "Reddit", icon: "🤖" },
-  { value: "hackernews", label: "Hacker News", icon: "🟧" },
-  { value: "indiehackers", label: "Indie Hackers", icon: "💡" },
+  { value: "producthunt", label: "Product Hunt" },
+  { value: "reddit", label: "Reddit" },
+  { value: "hackernews", label: "Hacker News" },
+  { value: "indiehackers", label: "Indie Hackers" },
 ];
 
 export function LaunchCopyGenerator() {
