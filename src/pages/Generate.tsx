@@ -113,9 +113,9 @@ export default function Generate() {
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-1">Generate Script</h1>
         <p className="text-sm sm:text-base text-muted-foreground mb-6 md:mb-8">AI-powered UGC script generator for authentic, converting content</p>
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-5">
           {/* Config Panel */}
-          <div className="space-y-6 lg:col-span-2">
+          <div className="space-y-6 md:col-span-2">
             <Card className="border-border bg-card">
               <CardHeader><CardTitle className="font-display text-lg">Configuration</CardTitle></CardHeader>
               <CardContent className="space-y-5">
