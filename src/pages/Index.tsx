@@ -44,47 +44,47 @@ export default function Index() {
   return (
     <AppLayout>
       {/* Hero */}
-      <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="mb-8">
-        <h1 className="font-display text-4xl font-bold text-foreground">
+      <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="mb-6 md:mb-8">
+        <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
           Welcome to <span className="text-gradient-primary">UGC Studio</span>
         </h1>
-        <p className="mt-2 text-lg text-muted-foreground">
+        <p className="mt-1 sm:mt-2 text-sm sm:text-base md:text-lg text-muted-foreground">
           Create scroll-stopping UGC scripts that convert. AI-powered, human-authentic.
         </p>
       </motion.div>
 
       {/* Quick Create */}
-      <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.1 }} className="mb-8">
+      <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.1 }} className="mb-6 md:mb-8">
         <Link to="/generate">
           <Card className="group cursor-pointer overflow-hidden border-primary/20 bg-card transition-all hover:border-primary/40 hover:glow-primary">
-            <CardContent className="flex items-center justify-between p-6">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl gradient-primary">
-                  <Sparkles className="h-6 w-6 text-primary-foreground" />
+            <CardContent className="flex items-center justify-between p-4 sm:p-6">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl gradient-primary">
+                  <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-primary-foreground" />
                 </div>
                 <div>
-                  <h3 className="font-display text-lg font-semibold text-foreground">Generate New Script</h3>
-                  <p className="text-sm text-muted-foreground">Select a product and let AI craft the perfect UGC script</p>
+                  <h3 className="font-display text-base sm:text-lg font-semibold text-foreground">Generate New Script</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Select a product and let AI craft the perfect UGC script</p>
                 </div>
               </div>
-              <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
+              <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary hidden sm:block" />
             </CardContent>
           </Card>
         </Link>
       </motion.div>
 
       {/* Stats */}
-      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="mb-6 md:mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
         {stats.map((stat, i) => (
           <motion.div key={stat.label} {...fadeUp} transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}>
             <Card className="border-border bg-card">
-              <CardContent className="flex items-center gap-4 p-6">
-                <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${stat.gradient}`}>
-                  <stat.icon className="h-5 w-5 text-primary-foreground" />
+              <CardContent className="flex items-center gap-3 sm:gap-4 p-4 sm:p-6">
+                <div className={`flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl ${stat.gradient}`}>
+                  <stat.icon className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold font-display text-foreground">{stat.value}</p>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="text-xl sm:text-2xl font-bold font-display text-foreground">{stat.value}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{stat.label}</p>
                 </div>
               </CardContent>
             </Card>
@@ -95,7 +95,7 @@ export default function Index() {
       {/* Recent Scripts */}
       <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.5 }}>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-display text-xl font-semibold text-foreground">Recent Scripts</h2>
+          <h2 className="font-display text-lg sm:text-xl font-semibold text-foreground">Recent Scripts</h2>
           <Link to="/scripts" className="flex items-center gap-1 text-sm text-primary hover:underline">
             View all <ArrowRight className="h-4 w-4" />
           </Link>

@@ -107,14 +107,14 @@ export default function Products() {
   return (
     <AppLayout>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="font-display text-3xl font-bold text-foreground">Products</h1>
-            <p className="text-muted-foreground">Manage your product library</p>
+            <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">Products</h1>
+            <p className="text-sm text-muted-foreground">Manage your product library</p>
           </div>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="gradient-primary border-0 gap-2">
+              <Button className="gradient-primary border-0 gap-2 w-full sm:w-auto">
                 <Plus className="h-4 w-4" /> Add Product
               </Button>
             </DialogTrigger>

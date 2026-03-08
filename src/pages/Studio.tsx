@@ -8,20 +8,20 @@ export default function Studio() {
   return (
     <AppLayout>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <h1 className="font-display text-3xl font-bold text-foreground mb-1">Video Studio</h1>
-        <p className="text-muted-foreground mb-8">Generate AI avatar videos from your scripts</p>
+        <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-1">Video Studio</h1>
+        <p className="text-sm sm:text-base text-muted-foreground mb-6 md:mb-8">Generate AI avatar videos from your scripts</p>
 
         <Card className="border-dashed border-border bg-card">
-          <CardContent className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-secondary">
+          <CardContent className="flex flex-col items-center justify-center py-12 sm:py-20 text-center px-4">
+            <div className="mb-4 sm:mb-6 flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl bg-secondary">
               <Video className="h-10 w-10 text-muted-foreground" />
             </div>
-            <h3 className="font-display text-2xl font-bold text-foreground">Coming Soon</h3>
+            <h3 className="font-display text-xl sm:text-2xl font-bold text-foreground">Coming Soon</h3>
             <p className="mt-3 max-w-md text-muted-foreground">
               Connect your HeyGen or Synthesia API key to generate realistic AI avatar videos directly from your scripts.
               Select a script, choose an avatar, and create professional UGC videos in minutes.
             </p>
-            <div className="mt-6 flex gap-3">
+            <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row gap-3">
               <Button variant="outline" className="gap-2" disabled>
                 <Settings className="h-4 w-4" /> Connect API Key
               </Button>
