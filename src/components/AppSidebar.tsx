@@ -35,9 +35,7 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
           // Mobile: slide in/out full width
           open ? "translate-x-0" : "-translate-x-full",
           // Tablet (md): icon-only collapsed sidebar, always visible
-          "md:translate-x-0 md:w-16",
-          // Desktop (lg): full sidebar
-          "lg:w-64"
+          "md:translate-x-0 md:w-64"
         )}
       >
         {/* Logo + Close */}
