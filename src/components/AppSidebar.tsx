@@ -65,7 +65,7 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
                 onClick={onClose}
                 title={item.label}
                 className={cn(
-                  "relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 justify-center lg:justify-start",
+                  "relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
                   isActive
                     ? "text-primary-foreground"
                     : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-foreground"
