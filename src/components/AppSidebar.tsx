@@ -9,6 +9,7 @@ const navItems = [
   { icon: Sparkles, label: "Generate Script", path: "/generate" },
   { icon: Library, label: "Script Library", path: "/scripts" },
   { icon: Megaphone, label: "Marketing", path: "/marketing" },
+  { icon: Server, label: "Deploy Guide", path: "/deploy" },
 ];
 
 interface AppSidebarProps {
