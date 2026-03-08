@@ -74,17 +74,17 @@ export default function Index() {
       </motion.div>
 
       {/* Stats */}
-      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="mb-6 md:mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
         {stats.map((stat, i) => (
           <motion.div key={stat.label} {...fadeUp} transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}>
             <Card className="border-border bg-card">
-              <CardContent className="flex items-center gap-4 p-6">
-                <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${stat.gradient}`}>
-                  <stat.icon className="h-5 w-5 text-primary-foreground" />
+              <CardContent className="flex items-center gap-3 sm:gap-4 p-4 sm:p-6">
+                <div className={`flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl ${stat.gradient}`}>
+                  <stat.icon className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold font-display text-foreground">{stat.value}</p>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="text-xl sm:text-2xl font-bold font-display text-foreground">{stat.value}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{stat.label}</p>
                 </div>
               </CardContent>
             </Card>
