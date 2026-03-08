@@ -44,7 +44,7 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg gradient-primary">
               <Sparkles className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="font-display text-lg font-bold text-foreground hidden lg:block">UGC Studio</span>
+            <span className="font-display text-lg font-bold text-foreground">UGC Studio</span>
           </div>
           <button
             onClick={onClose}
