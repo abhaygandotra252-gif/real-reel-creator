@@ -127,7 +127,7 @@ export function LandingCopyGenerator() {
                 <div className="grid gap-3 sm:grid-cols-2">
                   {landingData.features.map((f, i) => (
                     <div key={i} className="rounded-lg bg-secondary/50 p-3 space-y-1">
-                      <p className="text-sm font-medium text-foreground">{f.emoji} {f.title}</p>
+                      <p className="text-sm font-medium text-foreground">{f.title}</p>
                       <p className="text-xs text-muted-foreground">{f.description}</p>
                     </div>
                   ))}
