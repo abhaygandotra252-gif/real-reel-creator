@@ -133,11 +133,11 @@ export function ProspectFinder() {
       {results && (
         <Tabs defaultValue="queries" className="space-y-4">
           <TabsList className="bg-secondary/50 border border-border inline-flex w-max">
-            <TabsTrigger value="queries" className="gap-1.5 px-2 sm:px-3"><Search className="h-4 w-4" /> <span className="hidden sm:inline">Search Queries</span></TabsTrigger>
-            <TabsTrigger value="signals" className="gap-1.5 px-2 sm:px-3"><Target className="h-4 w-4" /> <span className="hidden sm:inline">ICP Signals</span></TabsTrigger>
-            <TabsTrigger value="personas" className="gap-1.5 px-2 sm:px-3"><Users className="h-4 w-4" /> <span className="hidden sm:inline">Personas</span></TabsTrigger>
-            <TabsTrigger value="templates" className="gap-1.5 px-2 sm:px-3"><MessageSquare className="h-4 w-4" /> <span className="hidden sm:inline">DM Templates</span></TabsTrigger>
-            <TabsTrigger value="playbook" className="gap-1.5 px-2 sm:px-3"><ListChecks className="h-4 w-4" /> <span className="hidden sm:inline">Playbook</span></TabsTrigger>
+            <TabsTrigger value="queries" className="gap-1.5 px-2 sm:px-3"><Search className="h-4 w-4" /> Search Queries</TabsTrigger>
+            <TabsTrigger value="signals" className="gap-1.5 px-2 sm:px-3"><Target className="h-4 w-4" /> ICP Signals</TabsTrigger>
+            <TabsTrigger value="personas" className="gap-1.5 px-2 sm:px-3"><Users className="h-4 w-4" /> Personas</TabsTrigger>
+            <TabsTrigger value="templates" className="gap-1.5 px-2 sm:px-3"><MessageSquare className="h-4 w-4" /> DM Templates</TabsTrigger>
+            <TabsTrigger value="playbook" className="gap-1.5 px-2 sm:px-3"><ListChecks className="h-4 w-4" /> Playbook</TabsTrigger>
           </TabsList>
 
           <TabsContent value="queries">
