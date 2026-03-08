@@ -82,29 +82,30 @@ export default function Studio() {
       return;
     }
     setIsGenerating(true);
+    setProgress(0);
 
     try {
       const finalPrompt = videoType === "motion-graphics"
         ? `Motion graphics animation: ${prompt}. Kinetic typography, smooth transitions, dynamic shapes, professional motion design, vibrant colors.`
         : prompt;
 
-      const response = await fetch("/api/generate-video", { method: "POST" });
-      // The video generation happens via Lovable's built-in videogen
-      // We'll store the prompt and let the user know
-      toast({ title: "Video generation started! 🎬", description: "This may take a moment..." });
+      toast({ title: "Generating video... 🎬", description: "Rendering frames in your browser" });
 
-      // Simulate storing — actual generation uses the videogen tool at build time
-      // For runtime, we'll use the edge function + AI to create an optimized prompt
-      setGeneratedVideos(prev => [{
-        url: "",
+      const blobUrl = await generateVideoFile({
         prompt: finalPrompt,
-      }, ...prev]);
+        videoType: videoType as "product-promo" | "motion-graphics",
+        aspectRatio,
+        duration,
+        onProgress: setProgress,
+      });
 
-      toast({ title: "Video prompt ready!", description: "Use the optimized prompt below to generate your video." });
+      setGeneratedVideos(prev => [{ url: blobUrl, prompt: finalPrompt }, ...prev]);
+      toast({ title: "Video ready! 🎉", description: "Your video has been generated successfully." });
     } catch {
       toast({ title: "Generation failed", variant: "destructive" });
     } finally {
       setIsGenerating(false);
+      setProgress(0);
     }
   };
 
