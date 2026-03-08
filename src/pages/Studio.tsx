@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AppLayout } from "@/components/AppLayout";
@@ -9,15 +9,19 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { Video, Sparkles, RefreshCw, Download, Film, Wand2 } from "lucide-react";
+import { Video, Sparkles, RefreshCw, Download, Film, Wand2, Clock, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { generateVideo as generateVideoFile } from "@/lib/video-generator";
 
 const ASPECT_RATIOS = [
   { value: "16:9", label: "16:9 — Landscape" },
   { value: "9:16", label: "9:16 — Portrait / Reels" },
   { value: "1:1", label: "1:1 — Square" },
-  { value: "4:3", label: "4:3 — Classic" },
+];
+
+const DURATIONS = [
+  { value: 5, label: "5s" },
+  { value: 10, label: "10s" },
+  { value: 15, label: "15s" },
 ];
 
 const VIDEO_TYPES = [
@@ -28,6 +32,15 @@ const VIDEO_TYPES = [
 type GeneratedVideo = {
   url: string;
   prompt: string;
+  status: "processing" | "succeed" | "failed";
+  taskId: string;
+  duration?: string;
+};
+
+const STATUS_CONFIG = {
+  processing: { icon: Loader2, label: "Generating...", color: "text-primary" },
+  succeed: { icon: CheckCircle2, label: "Ready", color: "text-green-500" },
+  failed: { icon: XCircle, label: "Failed", color: "text-destructive" },
 };
 
 export default function Studio() {
@@ -35,12 +48,13 @@ export default function Studio() {
   const [videoType, setVideoType] = useState("product-promo");
   const [prompt, setPrompt] = useState("");
   const [aspectRatio, setAspectRatio] = useState("16:9");
-  const [duration, setDuration] = useState<5 | 10>(5);
+  const [duration, setDuration] = useState(5);
   const [scriptId, setScriptId] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [generatedVideos, setGeneratedVideos] = useState<GeneratedVideo[]>([]);
-  const [progress, setProgress] = useState(0);
+  const [pollingProgress, setPollingProgress] = useState(0);
+  const pollTimerRef = useRef<ReturnType<typeof setInterval>>();
 
   const { data: scripts } = useQuery({
     queryKey: ["scripts"],
@@ -60,11 +74,7 @@ export default function Studio() {
     try {
       const scriptText = `${script.hook || ""}\n${script.body || ""}\n${script.cta || ""}`;
       const { data, error } = await supabase.functions.invoke("generate-video-prompt", {
-        body: {
-          script_text: scriptText,
-          product_name: script.products?.name || "",
-          video_type: videoType,
-        },
+        body: { script_text: scriptText, product_name: script.products?.name || "", video_type: videoType },
       });
       if (error) throw error;
       setPrompt(data.prompt);
@@ -76,36 +86,93 @@ export default function Studio() {
     }
   };
 
+  const pollForVideo = useCallback((taskId: string, videoIndex: number) => {
+    let elapsed = 0;
+    const maxWait = 300; // 5 min max
+    const interval = 5000; // poll every 5s
+
+    pollTimerRef.current = setInterval(async () => {
+      elapsed += interval / 1000;
+      setPollingProgress(Math.min(95, (elapsed / maxWait) * 100));
+
+      try {
+        const { data, error } = await supabase.functions.invoke("kling-video", {
+          body: { action: "poll", task_id: taskId },
+        });
+        if (error) throw error;
+
+        if (data.status === "succeed" && data.video_url) {
+          clearInterval(pollTimerRef.current);
+          setGeneratedVideos(prev => prev.map((v, i) =>
+            i === videoIndex ? { ...v, url: data.video_url, status: "succeed", duration: data.video_duration } : v
+          ));
+          setIsGenerating(false);
+          setPollingProgress(100);
+          toast({ title: "Video ready! 🎉", description: "Your AI video has been generated." });
+        } else if (data.status === "failed") {
+          clearInterval(pollTimerRef.current);
+          setGeneratedVideos(prev => prev.map((v, i) =>
+            i === videoIndex ? { ...v, status: "failed" } : v
+          ));
+          setIsGenerating(false);
+          setPollingProgress(0);
+          toast({ title: "Video generation failed", description: data.status_msg || "Please try again.", variant: "destructive" });
+        }
+        // else still processing, keep polling
+      } catch {
+        // Network error, keep trying
+      }
+
+      if (elapsed >= maxWait) {
+        clearInterval(pollTimerRef.current);
+        setIsGenerating(false);
+        setPollingProgress(0);
+        toast({ title: "Timeout", description: "Video is still processing. Check back later.", variant: "destructive" });
+      }
+    }, interval);
+  }, [toast]);
+
   const generateVideo = async () => {
     if (!prompt.trim()) {
       toast({ title: "Enter a video prompt", variant: "destructive" });
       return;
     }
     setIsGenerating(true);
-    setProgress(0);
+    setPollingProgress(0);
 
     try {
       const finalPrompt = videoType === "motion-graphics"
         ? `Motion graphics animation: ${prompt}. Kinetic typography, smooth transitions, dynamic shapes, professional motion design, vibrant colors.`
         : prompt;
 
-      toast({ title: "Generating video... 🎬", description: "Rendering frames in your browser" });
-
-      const blobUrl = await generateVideoFile({
-        prompt: finalPrompt,
-        videoType: videoType as "product-promo" | "motion-graphics",
-        aspectRatio,
-        duration,
-        onProgress: setProgress,
+      const { data, error } = await supabase.functions.invoke("kling-video", {
+        body: {
+          action: "create",
+          prompt: finalPrompt,
+          duration,
+          aspect_ratio: aspectRatio,
+          mode: "std",
+        },
       });
 
-      setGeneratedVideos(prev => [{ url: blobUrl, prompt: finalPrompt }, ...prev]);
-      toast({ title: "Video ready! 🎉", description: "Your video has been generated successfully." });
-    } catch {
-      toast({ title: "Generation failed", variant: "destructive" });
-    } finally {
+      if (error) throw error;
+      if (data.error) throw new Error(data.error);
+
+      toast({ title: "Video generation started! 🎬", description: `Task submitted. This typically takes 2-4 minutes for a ${duration}s video.` });
+
+      const newVideo: GeneratedVideo = {
+        url: "",
+        prompt: finalPrompt,
+        status: "processing",
+        taskId: data.task_id,
+      };
+
+      setGeneratedVideos(prev => [newVideo, ...prev]);
+      pollForVideo(data.task_id, 0);
+    } catch (err: any) {
       setIsGenerating(false);
-      setProgress(0);
+      setPollingProgress(0);
+      toast({ title: "Generation failed", description: err.message, variant: "destructive" });
     }
   };
 
@@ -113,7 +180,7 @@ export default function Studio() {
     <AppLayout>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-1">Video Studio</h1>
-        <p className="text-sm sm:text-base text-muted-foreground mb-6 md:mb-8">Generate AI promo videos & motion graphics from your scripts</p>
+        <p className="text-sm sm:text-base text-muted-foreground mb-6 md:mb-8">Generate real AI videos powered by Kling AI — up to 15 seconds</p>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
           {/* Config Panel */}
@@ -205,18 +272,19 @@ export default function Studio() {
                 <div>
                   <Label>Duration</Label>
                   <div className="mt-2 flex gap-2">
-                    {([5, 10] as const).map(d => (
+                    {DURATIONS.map(d => (
                       <button
-                        key={d}
-                        onClick={() => setDuration(d)}
+                        key={d.value}
+                        onClick={() => setDuration(d.value)}
                         className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                          duration === d ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                          duration === d.value ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
                         }`}
                       >
-                        {d}s
+                        {d.label}
                       </button>
                     ))}
                   </div>
+                  <p className="mt-1 text-[11px] text-muted-foreground">Longer videos use more credits</p>
                 </div>
 
                 <Button
@@ -232,8 +300,11 @@ export default function Studio() {
                 </Button>
                 {isGenerating && (
                   <div className="space-y-1">
-                    <Progress value={progress} className="h-2" />
-                    <p className="text-xs text-muted-foreground text-center">{progress}% — Rendering frames...</p>
+                    <Progress value={pollingProgress} className="h-2" />
+                    <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                      <Clock className="h-3 w-3" />
+                      <span>AI is creating your video — usually 2-4 min</span>
+                    </div>
                   </div>
                 )}
               </CardContent>
@@ -250,9 +321,7 @@ export default function Studio() {
                   </div>
                   <h3 className="font-display text-lg sm:text-xl font-semibold text-foreground">Ready to create</h3>
                   <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-                    {videoType === "motion-graphics"
-                      ? "Describe your motion graphics — dynamic text, shapes, transitions — and AI will generate a stunning animated clip."
-                      : "Enter a prompt or select a script to generate a cinematic product promo video powered by AI."}
+                    Powered by Kling AI — generate real cinematic videos up to 15 seconds from text prompts.
                   </p>
                   <div className="mt-6 flex flex-wrap justify-center gap-2">
                     {(videoType === "motion-graphics"
@@ -273,42 +342,49 @@ export default function Studio() {
             ) : (
               <div className="space-y-4">
                 <h2 className="font-display text-lg font-semibold text-foreground">Generated Videos</h2>
-                {generatedVideos.map((video, i) => (
-                  <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                    <Card className="border-border bg-card">
-                      <CardContent className="p-4">
-                        {video.url ? (
-                          <div className="mb-3 overflow-hidden rounded-lg bg-secondary">
-                            <video src={video.url} controls className="w-full" />
-                          </div>
-                        ) : (
-                          <div className="mb-3 flex aspect-video items-center justify-center rounded-lg bg-secondary/50 border border-border">
-                            <div className="text-center px-4">
-                              <Film className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
-                              <p className="text-sm text-muted-foreground">Video will appear here once generated</p>
+                {generatedVideos.map((video, i) => {
+                  const statusInfo = STATUS_CONFIG[video.status];
+                  const StatusIcon = statusInfo.icon;
+                  return (
+                    <motion.div key={video.taskId} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+                      <Card className="border-border bg-card">
+                        <CardContent className="p-4">
+                          {video.status === "succeed" && video.url ? (
+                            <div className="mb-3 overflow-hidden rounded-lg bg-secondary">
+                              <video src={video.url} controls className="w-full" />
                             </div>
-                          </div>
-                        )}
-                        <div className="rounded-lg bg-secondary/30 p-3">
-                          <p className="text-xs font-medium text-muted-foreground mb-1">Prompt Used:</p>
-                          <p className="text-sm text-foreground">{video.prompt}</p>
-                        </div>
-                        <div className="mt-3 flex gap-2">
-                          <Button variant="outline" size="sm" className="flex-1 gap-1" onClick={() => { setPrompt(video.prompt); window.scrollTo(0, 0); }}>
-                            <RefreshCw className="h-3 w-3" /> Regenerate
-                          </Button>
-                          {video.url && (
-                            <Button variant="outline" size="sm" className="gap-1" asChild>
-                              <a href={video.url} download>
-                                <Download className="h-3 w-3" /> Download
-                              </a>
-                            </Button>
+                          ) : (
+                            <div className="mb-3 flex aspect-video items-center justify-center rounded-lg bg-secondary/50 border border-border">
+                              <div className="text-center px-4">
+                                <StatusIcon className={`mx-auto mb-2 h-8 w-8 ${statusInfo.color} ${video.status === "processing" ? "animate-spin" : ""}`} />
+                                <p className={`text-sm font-medium ${statusInfo.color}`}>{statusInfo.label}</p>
+                                {video.status === "processing" && (
+                                  <p className="mt-1 text-xs text-muted-foreground">This usually takes 2-4 minutes</p>
+                                )}
+                              </div>
+                            </div>
                           )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
+                          <div className="rounded-lg bg-secondary/30 p-3">
+                            <p className="text-xs font-medium text-muted-foreground mb-1">Prompt:</p>
+                            <p className="text-sm text-foreground line-clamp-3">{video.prompt}</p>
+                          </div>
+                          <div className="mt-3 flex gap-2">
+                            <Button variant="outline" size="sm" className="flex-1 gap-1" onClick={() => { setPrompt(video.prompt); window.scrollTo(0, 0); }}>
+                              <RefreshCw className="h-3 w-3" /> Regenerate
+                            </Button>
+                            {video.url && (
+                              <Button variant="outline" size="sm" className="gap-1" asChild>
+                                <a href={video.url} download={`kling-video-${video.taskId}.mp4`} target="_blank" rel="noopener noreferrer">
+                                  <Download className="h-3 w-3" /> Download
+                                </a>
+                              </Button>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  );
+                })}
               </div>
             )}
           </div>
