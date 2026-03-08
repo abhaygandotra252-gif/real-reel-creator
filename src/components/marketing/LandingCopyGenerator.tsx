@@ -111,7 +111,7 @@ export function LandingCopyGenerator() {
             {/* Hero */}
             <Card className="border-border bg-card">
               <CardContent className="p-4 space-y-3">
-                <span className="font-display text-sm font-semibold text-foreground">🎯 Hero Section</span>
+                <span className="font-display text-sm font-semibold text-foreground">Hero Section</span>
                 <div className="rounded-lg bg-secondary/50 p-4 text-center space-y-2">
                   <h3 className="text-xl font-bold text-foreground">{landingData.hero_headline}</h3>
                   <p className="text-sm text-muted-foreground">{landingData.hero_subheadline}</p>
