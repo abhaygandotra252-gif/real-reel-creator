@@ -14,7 +14,104 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      products: {
+        Row: {
+          benefits: string[] | null
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          key_features: string[] | null
+          name: string
+          niche_category: string | null
+          source_url: string | null
+          target_audience: string | null
+          updated_at: string
+        }
+        Insert: {
+          benefits?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          key_features?: string[] | null
+          name: string
+          niche_category?: string | null
+          source_url?: string | null
+          target_audience?: string | null
+          updated_at?: string
+        }
+        Update: {
+          benefits?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          key_features?: string[] | null
+          name?: string
+          niche_category?: string | null
+          source_url?: string | null
+          target_audience?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      scripts: {
+        Row: {
+          body: string | null
+          created_at: string
+          cta: string | null
+          duration: string
+          hook: string | null
+          id: string
+          is_favorite: boolean | null
+          product_id: string | null
+          storyboard: Json | null
+          title: string
+          tone: string
+          updated_at: string
+          video_style: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          cta?: string | null
+          duration: string
+          hook?: string | null
+          id?: string
+          is_favorite?: boolean | null
+          product_id?: string | null
+          storyboard?: Json | null
+          title: string
+          tone: string
+          updated_at?: string
+          video_style: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          cta?: string | null
+          duration?: string
+          hook?: string | null
+          id?: string
+          is_favorite?: boolean | null
+          product_id?: string | null
+          storyboard?: Json | null
+          title?: string
+          tone?: string
+          updated_at?: string
+          video_style?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scripts_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
