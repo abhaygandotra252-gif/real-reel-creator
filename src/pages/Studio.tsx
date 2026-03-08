@@ -16,7 +16,7 @@ export default function Studio() {
             <div className="mb-4 sm:mb-6 flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl bg-secondary">
               <Video className="h-10 w-10 text-muted-foreground" />
             </div>
-            <h3 className="font-display text-2xl font-bold text-foreground">Coming Soon</h3>
+            <h3 className="font-display text-xl sm:text-2xl font-bold text-foreground">Coming Soon</h3>
             <p className="mt-3 max-w-md text-muted-foreground">
               Connect your HeyGen or Synthesia API key to generate realistic AI avatar videos directly from your scripts.
               Select a script, choose an avatar, and create professional UGC videos in minutes.
