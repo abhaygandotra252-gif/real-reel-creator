@@ -16,10 +16,10 @@ type Template = {
 };
 
 const TEMPLATE_TYPES = [
-  { value: "influencer-outreach", label: "Influencer Outreach", icon: "🤝" },
-  { value: "customer-followup", label: "Customer Follow-Up", icon: "💌" },
-  { value: "launch-announcement", label: "Launch Announcement", icon: "🚀" },
-  { value: "collab-proposal", label: "Collab Proposal", icon: "🤲" },
+  { value: "influencer-outreach", label: "Influencer Outreach" },
+  { value: "customer-followup", label: "Customer Follow-Up" },
+  { value: "launch-announcement", label: "Launch Announcement" },
+  { value: "collab-proposal", label: "Collab Proposal" },
 ];
 
 export function OutreachGenerator() {
@@ -57,7 +57,7 @@ export function OutreachGenerator() {
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setTemplates(data.templates);
-      toast({ title: "Templates generated! 📧" });
+      toast({ title: "Templates generated" });
     } catch (err: any) {
       toast({ title: "Generation failed", description: err.message, variant: "destructive" });
     } finally {
@@ -67,7 +67,7 @@ export function OutreachGenerator() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast({ title: "Copied to clipboard! 📋" });
+    toast({ title: "Copied to clipboard" });
   };
 
   return (
@@ -101,7 +101,6 @@ export function OutreachGenerator() {
                         : "border-border bg-secondary/50 text-muted-foreground hover:border-primary/30"
                     }`}
                   >
-                    <span>{t.icon}</span>
                     <span>{t.label}</span>
                   </button>
                 ))}

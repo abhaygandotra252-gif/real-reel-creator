@@ -16,10 +16,10 @@ type Caption = {
 };
 
 const PLATFORMS = [
-  { value: "instagram", label: "Instagram", icon: "📸" },
-  { value: "tiktok", label: "TikTok", icon: "🎵" },
-  { value: "twitter", label: "Twitter / X", icon: "𝕏" },
-  { value: "linkedin", label: "LinkedIn", icon: "💼" },
+  { value: "instagram", label: "Instagram" },
+  { value: "tiktok", label: "TikTok" },
+  { value: "twitter", label: "Twitter / X" },
+  { value: "linkedin", label: "LinkedIn" },
 ];
 
 export function CaptionGenerator() {
@@ -57,7 +57,7 @@ export function CaptionGenerator() {
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setCaptions(data.captions);
-      toast({ title: "Captions generated! ✍️" });
+      toast({ title: "Captions generated" });
     } catch (err: any) {
       toast({ title: "Generation failed", description: err.message, variant: "destructive" });
     } finally {
@@ -67,7 +67,7 @@ export function CaptionGenerator() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast({ title: "Copied to clipboard! 📋" });
+    toast({ title: "Copied to clipboard" });
   };
 
   return (
@@ -101,7 +101,6 @@ export function CaptionGenerator() {
                         : "border-border bg-secondary/50 text-muted-foreground hover:border-primary/30"
                     }`}
                   >
-                    <span>{p.icon}</span>
                     <span>{p.label}</span>
                   </button>
                 ))}

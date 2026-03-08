@@ -14,8 +14,8 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const typeInstructions: Record<string, string> = {
-      "launch": "Product launch thread: Hook tweet → Problem → Solution → Key features (1 per tweet) → Social proof/results → CTA. Make the hook irresistible.",
-      "build-in-public": "Building in public thread: Share the journey of building this product. Start with a hook, then cover: the problem noticed, early decisions, challenges faced, current state, lessons learned. Authentic and vulnerable tone.",
+      "launch": "Product launch thread: Hook tweet that stops the scroll, then Problem, Solution, Key features (1 per tweet), Social proof/results, CTA.",
+      "build-in-public": "Building in public thread: Share the journey of building this product. Start with a hook, then cover: the problem noticed, early decisions, challenges faced, current state, lessons learned. Authentic and direct.",
       "how-i-built": "Technical breakdown thread: 'How I built X' format. Cover tech stack, architecture decisions, interesting challenges, what you'd do differently. Developer-friendly tone.",
       "tips": "Tips/value thread related to the product's domain. Each tweet is a standalone tip. Hook tweet promises value. End with a CTA to check out the product. Educational and generous.",
     };
@@ -31,7 +31,8 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are a viral Twitter/X thread writer. Every tweet MUST be under 280 characters.
+            content: `You are a sharp Twitter/X thread writer. Every tweet MUST be under 280 characters. Write in a clear, direct tone. No emojis. No filler phrases like "game-changer" or "revolutionary." Sound like a founder sharing real insights, not a marketing bot.
+
 ${typeInstructions[thread_type] || typeInstructions["launch"]}
 
 Product: ${product_name}

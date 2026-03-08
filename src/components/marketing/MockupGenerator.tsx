@@ -51,7 +51,7 @@ export function MockupGenerator() {
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setGeneratedImage(data.image_url);
-      toast({ title: "Mockup generated! 🖼️" });
+      toast({ title: "Mockup generated" });
     } catch (err: any) {
       toast({ title: "Generation failed", description: err.message, variant: "destructive" });
     } finally {

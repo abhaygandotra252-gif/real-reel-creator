@@ -14,8 +14,8 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const platformGuidelines: Record<string, string> = {
-      instagram: "Instagram: Use emojis, line breaks, 20-30 relevant hashtags. Max 2200 chars. Engaging, visual language.",
-      tiktok: "TikTok: Short, punchy, trendy. Use 4-5 hashtags. Include a hook in the first line. Casual tone.",
+      instagram: "Instagram: Use line breaks for readability. Include 20-30 relevant hashtags. Max 2200 chars. Engaging, visual language. Skip emojis unless they serve a clear formatting purpose.",
+      tiktok: "TikTok: Short, punchy, trend-aware. Use 4-5 hashtags. Include a hook in the first line. Casual but not sloppy.",
       twitter: "Twitter/X: Under 280 chars. Witty, concise. 2-3 hashtags max. Thread-worthy hooks.",
       linkedin: "LinkedIn: Professional but personable. Storytelling format. 3-5 hashtags. Use line breaks for readability.",
     };
@@ -31,7 +31,8 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are an expert social media copywriter. Generate 3 caption variations for ${platform}.
+            content: `You are an expert social media copywriter. Generate 3 caption variations for ${platform}. Write in a clear, professional tone. No emojis unless the platform convention demands it (Instagram captions may use a few sparingly). No filler phrases like "game-changer" or "revolutionary." Sound like a human expert, not a marketing bot.
+
 ${platformGuidelines[platform] || platformGuidelines.instagram}
 
 Product: ${product_name}
@@ -74,16 +75,8 @@ Benefits: ${(benefits || []).join(", ") || "N/A"}`,
     });
 
     if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Rate limited. Please try again." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "AI credits exhausted." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
+      if (response.status === 429) return new Response(JSON.stringify({ error: "Rate limited. Please try again." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (response.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       const t = await response.text();
       throw new Error(`AI error ${response.status}: ${t}`);
     }
@@ -92,13 +85,9 @@ Benefits: ${(benefits || []).join(", ") || "N/A"}`,
     const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
     const captions = JSON.parse(toolCall.function.arguments);
 
-    return new Response(JSON.stringify(captions), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(JSON.stringify(captions), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("generate-captions error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

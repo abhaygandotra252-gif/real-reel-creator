@@ -24,7 +24,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are an SEO expert and content strategist. Generate comprehensive SEO assets for a product.
+            content: `You are an SEO expert and content strategist. Generate comprehensive SEO assets for a product. Write in a clear, professional tone. No emojis. No filler phrases like "game-changer" or "revolutionary." Sound like a human expert, not a marketing bot.
 
 Product: ${product_name}
 Description: ${product_description || "N/A"}

@@ -11,10 +11,10 @@ import { Sparkles, Copy, RefreshCw, Twitter } from "lucide-react";
 type Tweet = { number: number; content: string; char_count: number };
 
 const THREAD_TYPES = [
-  { value: "launch", label: "Product Launch", icon: "🚀" },
-  { value: "build-in-public", label: "Build in Public", icon: "🔨" },
-  { value: "how-i-built", label: "How I Built This", icon: "⚙️" },
-  { value: "tips", label: "Tips & Value", icon: "💡" },
+  { value: "launch", label: "Product Launch" },
+  { value: "build-in-public", label: "Build in Public" },
+  { value: "how-i-built", label: "How I Built This" },
+  { value: "tips", label: "Tips & Value" },
 ];
 
 export function ThreadBuilder() {
@@ -43,7 +43,7 @@ export function ThreadBuilder() {
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setTweets(data.tweets);
-      toast({ title: "Thread ready! 🧵" });
+      toast({ title: "Thread ready" });
     } catch (err: any) {
       toast({ title: "Generation failed", description: err.message, variant: "destructive" });
     } finally { setIsGenerating(false); }
@@ -51,13 +51,13 @@ export function ThreadBuilder() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast({ title: "Copied! 📋" });
+    toast({ title: "Copied to clipboard" });
   };
 
   const copyThread = () => {
     const all = tweets.map(t => `${t.number}/ ${t.content}`).join("\n\n");
     navigator.clipboard.writeText(all);
-    toast({ title: "Full thread copied! 🧵" });
+    toast({ title: "Full thread copied" });
   };
 
   return (
@@ -79,7 +79,7 @@ export function ThreadBuilder() {
                 {THREAD_TYPES.map((t) => (
                   <button key={t.value} onClick={() => setThreadType(t.value)}
                     className={`flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition-all ${threadType === t.value ? "border-primary bg-primary/10 text-foreground" : "border-border bg-secondary/50 text-muted-foreground hover:border-primary/30"}`}>
-                    <span>{t.icon}</span><span>{t.label}</span>
+                    <span>{t.label}</span>
                   </button>
                 ))}
               </div>

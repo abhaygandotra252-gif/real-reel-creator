@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Sparkles, Copy, RefreshCw, Layout, HelpCircle, Star, MousePointer } from "lucide-react";
 
-type Feature = { title: string; description: string; emoji: string };
+type Feature = { title: string; description: string };
 type FAQ = { question: string; answer: string };
 type LandingData = {
   hero_headline: string; hero_subheadline: string; features: Feature[];
@@ -40,7 +40,7 @@ export function LandingCopyGenerator() {
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setLandingData(data);
-      toast({ title: "Landing copy ready! 🎯" });
+      toast({ title: "Landing copy ready" });
     } catch (err: any) {
       toast({ title: "Generation failed", description: err.message, variant: "destructive" });
     } finally { setIsGenerating(false); }
@@ -48,7 +48,7 @@ export function LandingCopyGenerator() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast({ title: "Copied! 📋" });
+    toast({ title: "Copied to clipboard" });
   };
 
   const copyAll = () => {
@@ -58,7 +58,7 @@ export function LandingCopyGenerator() {
       landingData.hero_subheadline,
       "",
       "## Features",
-      ...landingData.features.map(f => `${f.emoji} ${f.title}: ${f.description}`),
+      ...landingData.features.map(f => `${f.title}: ${f.description}`),
       "",
       "## Social Proof Ideas",
       ...landingData.social_proof_suggestions.map(s => `- ${s}`),
@@ -70,7 +70,7 @@ export function LandingCopyGenerator() {
       ...landingData.cta_variations.map((c, i) => `${i + 1}. ${c}`),
     ].join("\n");
     navigator.clipboard.writeText(all);
-    toast({ title: "All copy copied! 📋" });
+    toast({ title: "All copy copied" });
   };
 
   return (
@@ -111,7 +111,7 @@ export function LandingCopyGenerator() {
             {/* Hero */}
             <Card className="border-border bg-card">
               <CardContent className="p-4 space-y-3">
-                <span className="font-display text-sm font-semibold text-foreground">🎯 Hero Section</span>
+                <span className="font-display text-sm font-semibold text-foreground">Hero Section</span>
                 <div className="rounded-lg bg-secondary/50 p-4 text-center space-y-2">
                   <h3 className="text-xl font-bold text-foreground">{landingData.hero_headline}</h3>
                   <p className="text-sm text-muted-foreground">{landingData.hero_subheadline}</p>
@@ -127,7 +127,7 @@ export function LandingCopyGenerator() {
                 <div className="grid gap-3 sm:grid-cols-2">
                   {landingData.features.map((f, i) => (
                     <div key={i} className="rounded-lg bg-secondary/50 p-3 space-y-1">
-                      <p className="text-sm font-medium text-foreground">{f.emoji} {f.title}</p>
+                      <p className="text-sm font-medium text-foreground">{f.title}</p>
                       <p className="text-xs text-muted-foreground">{f.description}</p>
                     </div>
                   ))}
@@ -138,7 +138,7 @@ export function LandingCopyGenerator() {
             {/* Social Proof */}
             <Card className="border-border bg-card">
               <CardContent className="p-4 space-y-3">
-                <span className="font-display text-sm font-semibold text-foreground">💬 Social Proof Ideas</span>
+                <span className="font-display text-sm font-semibold text-foreground">Social Proof Ideas</span>
                 {landingData.social_proof_suggestions.map((s, i) => (
                   <div key={i} className="flex items-center justify-between rounded-lg bg-secondary/50 p-3">
                     <p className="text-sm text-foreground flex-1">{s}</p>

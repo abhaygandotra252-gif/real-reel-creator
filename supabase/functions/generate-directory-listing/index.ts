@@ -9,7 +9,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { product_name, product_description, key_features, benefits } = await req.json();
+    const { product_name, product_description, key_features, benefits, directories } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
@@ -24,58 +24,47 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are a world-class conversion copywriter specializing in landing pages. Generate complete landing page copy that converts visitors into users. Write in a clear, professional tone. No emojis. No filler phrases like "game-changer" or "revolutionary." Sound like a human expert, not a marketing bot.
+            content: `You are a startup growth strategist who has submitted hundreds of products to directories. Write in a clear, professional tone. No emojis. No filler phrases like "game-changer" or "revolutionary." Sound like a human expert, not a marketing bot.
+
+For each directory, generate submission-ready copy that matches the directory's specific format, character limits, and community expectations.
 
 Product: ${product_name}
 Description: ${product_description || "N/A"}
 Key Features: ${(key_features || []).join(", ") || "N/A"}
 Benefits: ${(benefits || []).join(", ") || "N/A"}`,
           },
-          { role: "user", content: `Generate complete landing page copy for "${product_name}". Include: hero section (headline + subheadline), 3-4 feature blocks, social proof suggestions, FAQ (5 objection-busting answers), and 3 CTA variations.` },
+          { role: "user", content: `Generate submission-ready profiles for these directories: ${(directories || []).join(", ")}. For each directory, include: a one-liner (under 80 chars), a full description tailored to that directory's audience, and 3-5 category tags. Make each description unique — do not copy-paste the same text across directories.` },
         ],
         tools: [{
           type: "function",
           function: {
-            name: "create_landing_copy",
-            description: "Create landing page copy",
+            name: "create_directory_listings",
+            description: "Create directory submission profiles",
             parameters: {
               type: "object",
               properties: {
-                hero_headline: { type: "string" },
-                hero_subheadline: { type: "string" },
-                features: {
+                listings: {
                   type: "array",
                   items: {
                     type: "object",
                     properties: {
-                      title: { type: "string" },
-                      description: { type: "string" },
+                      directory: { type: "string" },
+                      one_liner: { type: "string" },
+                      full_description: { type: "string" },
+                      category_tags: { type: "array", items: { type: "string" } },
+                      submission_tip: { type: "string" },
                     },
-                    required: ["title", "description"],
+                    required: ["directory", "one_liner", "full_description", "category_tags", "submission_tip"],
                     additionalProperties: false,
                   },
                 },
-                social_proof_suggestions: { type: "array", items: { type: "string" } },
-                faqs: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      question: { type: "string" },
-                      answer: { type: "string" },
-                    },
-                    required: ["question", "answer"],
-                    additionalProperties: false,
-                  },
-                },
-                cta_variations: { type: "array", items: { type: "string" } },
               },
-              required: ["hero_headline", "hero_subheadline", "features", "social_proof_suggestions", "faqs", "cta_variations"],
+              required: ["listings"],
               additionalProperties: false,
             },
           },
         }],
-        tool_choice: { type: "function", function: { name: "create_landing_copy" } },
+        tool_choice: { type: "function", function: { name: "create_directory_listings" } },
       }),
     });
 
@@ -92,7 +81,7 @@ Benefits: ${(benefits || []).join(", ") || "N/A"}`,
 
     return new Response(JSON.stringify(result), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
-    console.error("generate-landing-copy error:", e);
+    console.error("generate-directory-listing error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

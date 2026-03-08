@@ -11,10 +11,10 @@ import { Sparkles, Copy, RefreshCw, Rocket, Lightbulb } from "lucide-react";
 type Section = { label: string; content: string; char_count: number; tip: string };
 
 const PLATFORMS = [
-  { value: "producthunt", label: "Product Hunt", icon: "🚀" },
-  { value: "reddit", label: "Reddit", icon: "🤖" },
-  { value: "hackernews", label: "Hacker News", icon: "🟧" },
-  { value: "indiehackers", label: "Indie Hackers", icon: "💡" },
+  { value: "producthunt", label: "Product Hunt" },
+  { value: "reddit", label: "Reddit" },
+  { value: "hackernews", label: "Hacker News" },
+  { value: "indiehackers", label: "Indie Hackers" },
 ];
 
 export function LaunchCopyGenerator() {
@@ -43,7 +43,7 @@ export function LaunchCopyGenerator() {
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setSections(data.sections);
-      toast({ title: "Launch copy ready! 🚀" });
+      toast({ title: "Launch copy ready" });
     } catch (err: any) {
       toast({ title: "Generation failed", description: err.message, variant: "destructive" });
     } finally { setIsGenerating(false); }
@@ -51,13 +51,13 @@ export function LaunchCopyGenerator() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast({ title: "Copied! 📋" });
+    toast({ title: "Copied to clipboard" });
   };
 
   const copyAll = () => {
     const all = sections.map(s => `## ${s.label}\n${s.content}`).join("\n\n");
     navigator.clipboard.writeText(all);
-    toast({ title: "All sections copied! 📋" });
+    toast({ title: "All sections copied" });
   };
 
   return (
@@ -79,7 +79,7 @@ export function LaunchCopyGenerator() {
                 {PLATFORMS.map((p) => (
                   <button key={p.value} onClick={() => setPlatform(p.value)}
                     className={`flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition-all ${platform === p.value ? "border-primary bg-primary/10 text-foreground" : "border-border bg-secondary/50 text-muted-foreground hover:border-primary/30"}`}>
-                    <span>{p.icon}</span><span>{p.label}</span>
+                    <span>{p.label}</span>
                   </button>
                 ))}
               </div>

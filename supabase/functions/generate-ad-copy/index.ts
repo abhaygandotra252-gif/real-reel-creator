@@ -29,7 +29,8 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are a performance marketing expert specializing in paid ads.
+            content: `You are a performance marketing expert specializing in paid ads. Write in a clear, professional tone. No emojis. No filler phrases like "game-changer" or "revolutionary." Sound like a human expert, not a marketing bot.
+
 ${platformInstructions[ad_platform] || platformInstructions["google"]}
 
 Product: ${product_name}
