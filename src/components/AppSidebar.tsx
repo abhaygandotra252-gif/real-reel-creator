@@ -86,7 +86,7 @@ export function AppSidebar({ open, onClose }: AppSidebarProps) {
         </nav>
 
         {/* Footer */}
-        <div className="border-t border-border p-2 lg:p-4">
+        <div className="border-t border-border p-4">
           <Link
             to="/settings"
             onClick={onClose}
