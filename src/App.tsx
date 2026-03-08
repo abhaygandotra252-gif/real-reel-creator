@@ -8,6 +8,7 @@ import Products from "./pages/Products";
 import Generate from "./pages/Generate";
 import Scripts from "./pages/Scripts";
 import Marketing from "./pages/Marketing";
+import DeployGuide from "./pages/DeployGuide";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
