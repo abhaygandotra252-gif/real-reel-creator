@@ -40,7 +40,7 @@ export function LandingCopyGenerator() {
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setLandingData(data);
-      toast({ title: "Landing copy ready! 🎯" });
+      toast({ title: "Landing copy ready" });
     } catch (err: any) {
       toast({ title: "Generation failed", description: err.message, variant: "destructive" });
     } finally { setIsGenerating(false); }
