@@ -44,11 +44,11 @@ export default function Index() {
   return (
     <AppLayout>
       {/* Hero */}
-      <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="mb-8">
-        <h1 className="font-display text-4xl font-bold text-foreground">
+      <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="mb-6 md:mb-8">
+        <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
           Welcome to <span className="text-gradient-primary">UGC Studio</span>
         </h1>
-        <p className="mt-2 text-lg text-muted-foreground">
+        <p className="mt-1 sm:mt-2 text-sm sm:text-base md:text-lg text-muted-foreground">
           Create scroll-stopping UGC scripts that convert. AI-powered, human-authentic.
         </p>
       </motion.div>
