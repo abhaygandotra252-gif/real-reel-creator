@@ -57,7 +57,7 @@ export function ThreadBuilder() {
   const copyThread = () => {
     const all = tweets.map(t => `${t.number}/ ${t.content}`).join("\n\n");
     navigator.clipboard.writeText(all);
-    toast({ title: "Full thread copied! 🧵" });
+    toast({ title: "Full thread copied" });
   };
 
   return (
