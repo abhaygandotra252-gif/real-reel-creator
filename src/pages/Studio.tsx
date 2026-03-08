@@ -40,6 +40,7 @@ export default function Studio() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [generatedVideos, setGeneratedVideos] = useState<GeneratedVideo[]>([]);
+  const [progress, setProgress] = useState(0);
 
   const { data: scripts } = useQuery({
     queryKey: ["scripts"],
