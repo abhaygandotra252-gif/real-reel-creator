@@ -74,7 +74,7 @@ export function CarouselGenerator() {
       setSlides(slideData);
       const images = renderAllSlides(slideData, format, paletteIndex);
       setRenderedImages(images);
-      toast({ title: "Carousel generated! 🎨" });
+      toast({ title: "Carousel generated" });
     } catch (err: any) {
       toast({ title: "Generation failed", description: err.message, variant: "destructive" });
     } finally {

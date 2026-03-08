@@ -101,7 +101,6 @@ export function CaptionGenerator() {
                         : "border-border bg-secondary/50 text-muted-foreground hover:border-primary/30"
                     }`}
                   >
-                    <span>{p.icon}</span>
                     <span>{p.label}</span>
                   </button>
                 ))}

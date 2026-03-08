@@ -147,7 +147,7 @@ export function SEOGenerator() {
                       <p className="text-sm font-medium text-foreground">{blog.title}</p>
                       <Button variant="ghost" size="sm" className="h-6 gap-1" onClick={() => copyToClipboard(`${blog.title}\n\nKeyword: ${blog.target_keyword}\n\nOutline:\n${blog.outline.map((o, j) => `${j + 1}. ${o}`).join("\n")}`)}><Copy className="h-3 w-3" /></Button>
                     </div>
-                    <span className="inline-block rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">🎯 {blog.target_keyword}</span>
+                    <span className="inline-block rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">{blog.target_keyword}</span>
                     <ul className="space-y-1 ml-4">
                       {blog.outline.map((item, j) => <li key={j} className="text-xs text-muted-foreground list-disc">{item}</li>)}
                     </ul>

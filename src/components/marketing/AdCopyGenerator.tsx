@@ -72,7 +72,7 @@ export function AdCopyGenerator() {
                 {AD_PLATFORMS.map((p) => (
                   <button key={p.value} onClick={() => setAdPlatform(p.value)}
                     className={`flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-medium transition-all ${adPlatform === p.value ? "border-primary bg-primary/10 text-foreground" : "border-border bg-secondary/50 text-muted-foreground hover:border-primary/30"}`}>
-                    <span>{p.icon}</span><span>{p.label}</span>
+                    <span>{p.label}</span>
                   </button>
                 ))}
               </div>

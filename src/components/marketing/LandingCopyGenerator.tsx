@@ -58,7 +58,7 @@ export function LandingCopyGenerator() {
       landingData.hero_subheadline,
       "",
       "## Features",
-      ...landingData.features.map(f => `${f.emoji} ${f.title}: ${f.description}`),
+      ...landingData.features.map(f => `${f.title}: ${f.description}`),
       "",
       "## Social Proof Ideas",
       ...landingData.social_proof_suggestions.map(s => `- ${s}`),
