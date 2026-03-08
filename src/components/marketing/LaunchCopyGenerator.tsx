@@ -43,7 +43,7 @@ export function LaunchCopyGenerator() {
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setSections(data.sections);
-      toast({ title: "Launch copy ready! 🚀" });
+      toast({ title: "Launch copy ready" });
     } catch (err: any) {
       toast({ title: "Generation failed", description: err.message, variant: "destructive" });
     } finally { setIsGenerating(false); }
