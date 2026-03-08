@@ -43,7 +43,7 @@ export function ThreadBuilder() {
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setTweets(data.tweets);
-      toast({ title: "Thread ready! 🧵" });
+      toast({ title: "Thread ready" });
     } catch (err: any) {
       toast({ title: "Generation failed", description: err.message, variant: "destructive" });
     } finally { setIsGenerating(false); }
