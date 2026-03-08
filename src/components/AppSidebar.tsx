@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Package, Sparkles, Library, Video, Settings, X } from "lucide-react";
+import { LayoutDashboard, Package, Sparkles, Library, Megaphone, Settings, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -8,7 +8,7 @@ const navItems = [
   { icon: Package, label: "Products", path: "/products" },
   { icon: Sparkles, label: "Generate Script", path: "/generate" },
   { icon: Library, label: "Script Library", path: "/scripts" },
-  { icon: Video, label: "Video Studio", path: "/studio" },
+  { icon: Megaphone, label: "Marketing", path: "/marketing" },
 ];
 
 interface AppSidebarProps {
