@@ -138,7 +138,7 @@ export function LandingCopyGenerator() {
             {/* Social Proof */}
             <Card className="border-border bg-card">
               <CardContent className="p-4 space-y-3">
-                <span className="font-display text-sm font-semibold text-foreground">💬 Social Proof Ideas</span>
+                <span className="font-display text-sm font-semibold text-foreground">Social Proof Ideas</span>
                 {landingData.social_proof_suggestions.map((s, i) => (
                   <div key={i} className="flex items-center justify-between rounded-lg bg-secondary/50 p-3">
                     <p className="text-sm text-foreground flex-1">{s}</p>
