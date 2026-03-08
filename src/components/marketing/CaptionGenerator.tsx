@@ -57,7 +57,7 @@ export function CaptionGenerator() {
       if (error) throw error;
       if (data.error) throw new Error(data.error);
       setCaptions(data.captions);
-      toast({ title: "Captions generated! ✍️" });
+      toast({ title: "Captions generated" });
     } catch (err: any) {
       toast({ title: "Generation failed", description: err.message, variant: "destructive" });
     } finally {
