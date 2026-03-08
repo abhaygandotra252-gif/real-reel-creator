@@ -47,9 +47,10 @@ export default function Marketing() {
                 <TabsTrigger
                   key={tab.value}
                   value={tab.value}
-                  className="gap-1.5 data-[state=active]:bg-primary/10 data-[state=active]:text-foreground whitespace-nowrap"
+                  className="gap-1.5 data-[state=active]:bg-primary/10 data-[state=active]:text-foreground whitespace-nowrap px-2 sm:px-3"
                 >
-                  <tab.icon className="h-4 w-4" /> {tab.label}
+                  <tab.icon className="h-4 w-4" />
+                  <span className="hidden sm:inline">{tab.label}</span>
                 </TabsTrigger>
               ))}
             </TabsList>

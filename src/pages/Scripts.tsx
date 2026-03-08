@@ -127,7 +127,7 @@ export default function Scripts() {
                   <CardContent className="flex items-center justify-between p-4">
                     <div className="flex-1 min-w-0">
                       <h4 className="font-medium text-foreground truncate">{s.title}</h4>
-                      <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+                      <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                         {s.products?.name && <span className="text-foreground/70">{s.products.name}</span>}
                         <span className="rounded-full bg-primary/10 px-2 py-0.5 text-primary">{styleLabel(s.video_style)}</span>
                         <span>{s.duration}</span>
@@ -141,7 +141,7 @@ export default function Scripts() {
                       <Button variant="ghost" size="icon" className="h-8 w-8" onClick={e => { e.stopPropagation(); copyScript(s); }}>
                         <Copy className="h-4 w-4 text-muted-foreground" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => { e.stopPropagation(); deleteScript.mutate(s.id); }}>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity" onClick={e => { e.stopPropagation(); deleteScript.mutate(s.id); }}>
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </div>

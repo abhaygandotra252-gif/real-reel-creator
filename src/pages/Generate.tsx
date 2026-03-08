@@ -113,9 +113,9 @@ export default function Generate() {
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-1">Generate Script</h1>
         <p className="text-sm sm:text-base text-muted-foreground mb-6 md:mb-8">AI-powered UGC script generator for authentic, converting content</p>
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-5">
           {/* Config Panel */}
-          <div className="space-y-6 lg:col-span-2">
+          <div className="space-y-6 md:col-span-2">
             <Card className="border-border bg-card">
               <CardHeader><CardTitle className="font-display text-lg">Configuration</CardTitle></CardHeader>
               <CardContent className="space-y-5">
@@ -200,7 +200,7 @@ export default function Generate() {
           </div>
 
           {/* Script Output */}
-          <div className="lg:col-span-3">
+          <div className="md:col-span-3">
             <AnimatePresence mode="wait">
               {isGenerating ? (
                 <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -217,9 +217,9 @@ export default function Generate() {
               ) : script ? (
                 <motion.div key="result" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                   {/* Title + Actions */}
-                  <div className="flex items-center justify-between">
-                    <h2 className="font-display text-xl font-bold text-foreground">{script.title}</h2>
-                    <div className="flex gap-2">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">{script.title}</h2>
+                    <div className="flex gap-2 shrink-0">
                       <Button variant="outline" size="sm" className="gap-1" onClick={() => copyToClipboard(fullScriptText)}>
                         <Copy className="h-4 w-4" /> Copy All
                       </Button>

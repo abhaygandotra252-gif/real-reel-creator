@@ -51,8 +51,8 @@ export function SEOGenerator() {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-      <div className="space-y-4 lg:col-span-2">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-5">
+      <div className="space-y-4 md:col-span-2">
         <Card className="border-border bg-card">
           <CardHeader className="pb-3"><CardTitle className="font-display text-lg">SEO Generator</CardTitle></CardHeader>
           <CardContent className="space-y-4">
@@ -69,7 +69,7 @@ export function SEOGenerator() {
           </CardContent>
         </Card>
       </div>
-      <div className="lg:col-span-3">
+      <div className="md:col-span-3">
         {!seoData ? (
           <Card className="border-dashed border-border bg-card">
             <CardContent className="flex flex-col items-center justify-center py-16 sm:py-24 text-center px-4">

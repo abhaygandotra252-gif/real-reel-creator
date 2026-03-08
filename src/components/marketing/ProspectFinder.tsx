@@ -91,7 +91,7 @@ export function ProspectFinder() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Product</Label>
               <Select value={selectedProduct} onValueChange={setSelectedProduct}>
@@ -133,20 +133,20 @@ export function ProspectFinder() {
       {results && (
         <Tabs defaultValue="queries" className="space-y-4">
           <TabsList className="bg-secondary/50 border border-border inline-flex w-max">
-            <TabsTrigger value="queries" className="gap-1.5"><Search className="h-4 w-4" /> Search Queries</TabsTrigger>
-            <TabsTrigger value="signals" className="gap-1.5"><Target className="h-4 w-4" /> ICP Signals</TabsTrigger>
-            <TabsTrigger value="personas" className="gap-1.5"><Users className="h-4 w-4" /> Personas</TabsTrigger>
-            <TabsTrigger value="templates" className="gap-1.5"><MessageSquare className="h-4 w-4" /> DM Templates</TabsTrigger>
-            <TabsTrigger value="playbook" className="gap-1.5"><ListChecks className="h-4 w-4" /> Playbook</TabsTrigger>
+            <TabsTrigger value="queries" className="gap-1.5 px-2 sm:px-3"><Search className="h-4 w-4" /> <span className="hidden sm:inline">Search Queries</span></TabsTrigger>
+            <TabsTrigger value="signals" className="gap-1.5 px-2 sm:px-3"><Target className="h-4 w-4" /> <span className="hidden sm:inline">ICP Signals</span></TabsTrigger>
+            <TabsTrigger value="personas" className="gap-1.5 px-2 sm:px-3"><Users className="h-4 w-4" /> <span className="hidden sm:inline">Personas</span></TabsTrigger>
+            <TabsTrigger value="templates" className="gap-1.5 px-2 sm:px-3"><MessageSquare className="h-4 w-4" /> <span className="hidden sm:inline">DM Templates</span></TabsTrigger>
+            <TabsTrigger value="playbook" className="gap-1.5 px-2 sm:px-3"><ListChecks className="h-4 w-4" /> <span className="hidden sm:inline">Playbook</span></TabsTrigger>
           </TabsList>
 
           <TabsContent value="queries">
             <div className="space-y-3">
               {results.searchQueries?.map((q: any, i: number) => (
                 <Card key={i} className="border-border bg-card">
-                  <CardContent className="p-4 space-y-2">
+                  <CardContent className="p-3 sm:p-4 space-y-2">
                     <div className="flex items-start justify-between gap-2">
-                      <code className="text-sm font-mono bg-muted px-2 py-1 rounded break-all text-foreground">{q.query}</code>
+                      <code className="text-xs sm:text-sm font-mono bg-muted px-2 py-1 rounded break-all text-foreground">{q.query}</code>
                       <Button variant="ghost" size="icon" onClick={() => copyToClipboard(q.query)} className="shrink-0">
                         <Copy className="h-4 w-4" />
                       </Button>
@@ -163,7 +163,7 @@ export function ProspectFinder() {
             <div className="space-y-3">
               {results.icpSignals?.map((s: any, i: number) => (
                 <Card key={i} className="border-border bg-card">
-                  <CardContent className="p-4">
+                  <CardContent className="p-3 sm:p-4">
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <p className="text-sm font-medium text-foreground">{s.signal}</p>
@@ -180,10 +180,10 @@ export function ProspectFinder() {
           </TabsContent>
 
           <TabsContent value="personas">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {results.prospectPersonas?.map((p: any, i: number) => (
                 <Card key={i} className="border-border bg-card">
-                  <CardContent className="p-4 space-y-3">
+                  <CardContent className="p-3 sm:p-4 space-y-3">
                     <div>
                       <p className="font-medium text-foreground">{p.name}</p>
                       <p className="text-sm text-muted-foreground">{p.title}</p>
@@ -215,7 +215,7 @@ export function ProspectFinder() {
             <div className="space-y-4">
               {results.dmTemplates?.map((t: any, i: number) => (
                 <Card key={i} className="border-border bg-card">
-                  <CardContent className="p-4 space-y-3">
+                  <CardContent className="p-3 sm:p-4 space-y-3">
                     <div className="flex items-start justify-between">
                       <Badge variant="outline">{t.scenario}</Badge>
                       <Button variant="ghost" size="icon" onClick={() => copyToClipboard(t.message)} className="shrink-0">
@@ -244,14 +244,14 @@ export function ProspectFinder() {
 
           <TabsContent value="playbook">
             <Card className="border-border bg-card">
-              <CardContent className="p-4 space-y-4">
+              <CardContent className="p-3 sm:p-4 space-y-4">
                 {results.engagementPlaybook?.map((step: any, i: number) => (
-                  <div key={i} className="flex gap-4">
+                  <div key={i} className="flex gap-3 sm:gap-4">
                     <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-medium">
                       {step.step}
                     </div>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
+                    <div className="space-y-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
                         <p className="text-sm font-medium text-foreground">{step.action}</p>
                         <Badge variant="outline" className="text-xs">{step.timing}</Badge>
                       </div>
