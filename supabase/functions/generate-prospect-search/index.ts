@@ -22,39 +22,41 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const platformInstructions: Record<string, string> = {
-      "twitter": `Generate Twitter/X advanced search queries using operators like "from:", "min_faves:", quotes for exact phrases, and keyword combinations. Include hashtag-based searches and bio keyword searches.`,
-      "reddit": `Generate Reddit search queries for specific subreddits where the ICP hangs out. Include subreddit names, search strings, and sort-by recommendations (new, top, controversial). Focus on complaint/question posts.`,
-      "linkedin": `Generate LinkedIn search filter combinations: job titles, industries, company sizes, keywords for the search bar, and Boolean search strings. Include LinkedIn Sales Navigator filters if applicable.`,
-      "quora": `Generate Quora search queries targeting questions the ICP would ask. Include specific question formats, topic/space names to follow, and answer-monitoring strategies.`,
-      "indie_hackers": `Generate Indie Hackers search queries, group names, and topic filters. Focus on milestone posts, "ask IH" threads, and product feedback requests where the ICP congregates.`,
+      "twitter": `Generate simple search terms and phrases to type into Twitter/X search bar. No advanced operators like "from:" or "min_faves:". Just plain words and short phrases someone can copy-paste directly into the search box. Example: "struggling with invoicing freelance" or "need a better CRM". Keep it dead simple.`,
+      "reddit": `Generate simple search terms to type into Reddit's search bar or Google with "site:reddit.com". Just plain phrases, no complex operators. Include which subreddits to check. Example: "best tool for managing clients" or "tired of spreadsheets". Keep it dead simple.`,
+      "linkedin": `Generate simple search terms to type into LinkedIn's search bar. Just job titles, keywords, and short phrases. No Boolean operators or Sales Navigator filters. Example: "freelance designer" or "startup founder SaaS". Keep it dead simple.`,
+      "quora": `Generate simple search terms to type into Quora's search bar. Just questions and phrases people would search. Example: "how to manage freelance clients" or "best invoicing software". Keep it dead simple.`,
+      "indie_hackers": `Generate simple search terms to type into Indie Hackers search. Just plain phrases and keywords. Example: "looking for feedback on my SaaS" or "struggling with customer acquisition". Keep it dead simple.`,
     };
 
-    const systemPrompt = `You are a B2B growth strategist who specializes in finding ideal customers on social platforms. You write in a direct, professional tone. No emojis. No filler phrases like "game-changer," "revolutionary," or "unlock your potential." Sound like a seasoned growth operator giving a colleague specific, actionable instructions.
+    const systemPrompt = `You are a B2B growth strategist who finds ideal customers on social platforms. Direct, no-nonsense tone. No emojis. No filler.
 
-Your task: Given a product and its ICP, generate a comprehensive prospect-finding playbook for ${platform}.
+Your task: Generate a prospect-finding playbook for ${platform}.
+
+CRITICAL RULE FOR SEARCH QUERIES: Every search query must be a simple phrase that someone can copy and paste directly into the platform's search bar. No advanced search operators, no filters, no Boolean logic, no quotation marks wrapping phrases, no colons. Just plain everyday words and short phrases. Think of what a normal person would type into a search box.
 
 ${platformInstructions[platform] || ""}
 
 Return a JSON object with this exact structure:
 {
   "searchQueries": [
-    { "query": "the exact search string to paste", "description": "what this query finds and why it works", "expectedResults": "what kind of profiles/posts this surfaces" }
+    { "query": "the exact simple search term to paste", "description": "what this finds", "expectedResults": "what kind of results this surfaces" }
   ],
   "icpSignals": [
     { "signal": "what to look for", "why": "why this indicates they're a prospect", "priority": "high | medium | low" }
   ],
   "prospectPersonas": [
-    { "name": "Fictional Name", "title": "Their role/title", "background": "2-3 sentence description of who they are", "painPoints": ["specific pain point 1", "specific pain point 2"], "whereToFind": "specific platform locations", "typicalPost": "an example post they would write that signals they need this product" }
+    { "name": "Fictional Name", "title": "Their role", "background": "2 sentence description", "painPoints": ["pain 1", "pain 2"], "whereToFind": "where on the platform", "typicalPost": "example post they'd write" }
   ],
   "dmTemplates": [
-    { "scenario": "when to use this template", "subject": "subject line if applicable", "message": "the full message text", "followUp": "what to send if no reply after 3-5 days" }
+    { "scenario": "when to use this", "subject": "subject line if applicable", "message": "the message", "followUp": "follow-up if no reply" }
   ],
   "engagementPlaybook": [
-    { "step": 1, "action": "what to do", "timing": "when to do it", "details": "specific instructions" }
+    { "step": 1, "action": "what to do", "timing": "when", "details": "instructions" }
   ]
 }
 
-Generate 5-8 search queries, 5-7 ICP signals, 5 prospect personas, 3 DM templates (value-first, not salesy), and a 5-step engagement playbook. Every DM template must lead with value — a genuine observation, compliment on their work, or a free resource — never an immediate pitch. The first message should never mention pricing or ask for a call.`;
+Generate 5-8 search queries (SIMPLE PHRASES ONLY), 5-7 ICP signals, 5 personas, 3 DM templates (value-first, never salesy), and a 5-step engagement playbook. First DM must never mention pricing or ask for a call.`;
 
     const userPrompt = `Product: ${productName}
 Description: ${productDescription || "Not provided"}

@@ -308,15 +308,14 @@ export function ProspectFinder() {
               <div className="space-y-3">
                 {results.searchQueries?.map((q: any, i: number) => (
                   <Card key={i} className="border-border bg-card">
-                    <CardContent className="p-4 space-y-2">
-                      <div className="flex items-start justify-between gap-2">
-                        <code className="text-sm font-mono bg-muted px-2 py-1 rounded break-all text-foreground">{q.query}</code>
-                        <Button variant="secondary" size="sm" onClick={() => copyToClipboard(q.query)} className="shrink-0 gap-1.5">
+                    <CardContent className="p-3 sm:p-4 space-y-2">
+                      <div className="flex flex-col sm:flex-row sm:items-start gap-2">
+                        <code className="text-sm font-mono bg-muted px-2 py-1.5 rounded break-all text-foreground flex-1">{q.query}</code>
+                        <Button variant="secondary" size="sm" onClick={() => copyToClipboard(q.query)} className="shrink-0 gap-1.5 w-full sm:w-auto">
                           <Copy className="h-3.5 w-3.5" /> Copy
                         </Button>
                       </div>
                       <p className="text-sm text-muted-foreground">{q.description}</p>
-                      <p className="text-xs text-muted-foreground/70">Expected results: {q.expectedResults}</p>
                     </CardContent>
                   </Card>
                 ))}
@@ -327,13 +326,13 @@ export function ProspectFinder() {
               <div className="space-y-3">
                 {results.icpSignals?.map((s: any, i: number) => (
                   <Card key={i} className="border-border bg-card">
-                    <CardContent className="p-4">
+                    <CardContent className="p-3 sm:p-4">
                       <div className="flex items-start justify-between gap-2">
-                        <div>
+                        <div className="min-w-0">
                           <p className="text-sm font-medium text-foreground">{s.signal}</p>
                           <p className="text-sm text-muted-foreground mt-1">{s.why}</p>
                         </div>
-                        <Badge variant={s.priority === "high" ? "default" : s.priority === "medium" ? "secondary" : "outline"}>
+                        <Badge variant={s.priority === "high" ? "default" : s.priority === "medium" ? "secondary" : "outline"} className="shrink-0">
                           {s.priority}
                         </Badge>
                       </div>
@@ -347,7 +346,7 @@ export function ProspectFinder() {
               <div className="grid grid-cols-1 gap-4">
                 {results.prospectPersonas?.map((p: any, i: number) => (
                   <Card key={i} className="border-border bg-card">
-                    <CardContent className="p-4 space-y-3">
+                    <CardContent className="p-3 sm:p-4 space-y-3">
                       <div>
                         <p className="font-medium text-foreground">{p.name}</p>
                         <p className="text-sm text-muted-foreground">{p.title}</p>
@@ -379,10 +378,10 @@ export function ProspectFinder() {
               <div className="space-y-4">
                 {results.dmTemplates?.map((t: any, i: number) => (
                   <Card key={i} className="border-border bg-card">
-                    <CardContent className="p-4 space-y-3">
-                      <div className="flex items-start justify-between">
-                        <Badge className="bg-primary/10 text-primary border-primary/20">{t.scenario}</Badge>
-                        <Button variant="secondary" size="sm" onClick={() => copyToClipboard(t.message)} className="shrink-0 gap-1.5">
+                    <CardContent className="p-3 sm:p-4 space-y-3">
+                      <div className="flex flex-col sm:flex-row sm:items-start gap-2">
+                        <Badge className="bg-primary/10 text-primary border-primary/20 w-fit">{t.scenario}</Badge>
+                        <Button variant="secondary" size="sm" onClick={() => copyToClipboard(t.message)} className="shrink-0 gap-1.5 w-full sm:w-auto sm:ml-auto">
                           <Copy className="h-3.5 w-3.5" /> Copy
                         </Button>
                       </div>
@@ -408,19 +407,19 @@ export function ProspectFinder() {
 
             <TabsContent value="playbook">
               <Card className="border-border bg-card">
-                <CardContent className="p-4 space-y-1">
+                <CardContent className="p-3 sm:p-4 space-y-1">
                   {results.engagementPlaybook?.map((step: any, i: number) => (
-                    <div key={i} className="flex gap-4 relative">
+                    <div key={i} className="flex gap-3 sm:gap-4 relative">
                       {i < (results.engagementPlaybook?.length ?? 0) - 1 && (
-                        <div className="absolute left-[18px] top-10 bottom-0 w-px bg-border" />
+                        <div className="absolute left-[14px] sm:left-[18px] top-10 bottom-0 w-px bg-border" />
                       )}
-                      <div className="flex-shrink-0 w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-bold z-10">
+                      <div className="flex-shrink-0 w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs sm:text-sm font-bold z-10">
                         {step.step}
                       </div>
                       <div className="space-y-1 min-w-0 pb-5">
-                        <div className="flex flex-wrap items-center gap-2">
+                        <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-1 sm:gap-2">
                           <p className="text-sm font-medium text-foreground">{step.action}</p>
-                          <Badge variant="outline" className="text-xs">{step.timing}</Badge>
+                          <Badge variant="outline" className="text-xs w-fit">{step.timing}</Badge>
                         </div>
                         <p className="text-sm text-muted-foreground">{step.details}</p>
                       </div>
