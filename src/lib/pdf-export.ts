@@ -1,18 +1,11 @@
 export function printAsPdf(title: string, htmlContent: string) {
-  const iframe = document.createElement("iframe");
-  iframe.style.position = "fixed";
-  iframe.style.right = "0";
-  iframe.style.bottom = "0";
-  iframe.style.width = "0";
-  iframe.style.height = "0";
-  iframe.style.border = "none";
-  document.body.appendChild(iframe);
+  const newWindow = window.open("", "_blank");
+  if (!newWindow) {
+    alert("Please allow pop-ups to download the PDF.");
+    return;
+  }
 
-  const doc = iframe.contentWindow?.document;
-  if (!doc) return;
-
-  doc.open();
-  doc.write(`<!DOCTYPE html>
+  newWindow.document.write(`<!DOCTYPE html>
 <html>
 <head>
   <title>${title}</title>
@@ -36,11 +29,9 @@ export function printAsPdf(title: string, htmlContent: string) {
   ${htmlContent}
 </body>
 </html>`);
-  doc.close();
+  newWindow.document.close();
 
-  iframe.contentWindow?.focus();
   setTimeout(() => {
-    iframe.contentWindow?.print();
-    setTimeout(() => document.body.removeChild(iframe), 1000);
-  }, 250);
+    newWindow.print();
+  }, 500);
 }
