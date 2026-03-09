@@ -2,13 +2,14 @@ import { AppLayout } from "@/components/AppLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
-import { Image, MessageSquare, ImageIcon, Mail, Rocket, Twitter, Search, Megaphone, Layout, FolderOpen, Zap, Users } from "lucide-react";
+import { Image, MessageSquare, ImageIcon, Mail, Rocket, Search, Megaphone, Layout, FolderOpen, Zap, Users, MessageCircle, AtSign } from "lucide-react";
 import { CarouselGenerator } from "@/components/marketing/CarouselGenerator";
 import { CaptionGenerator } from "@/components/marketing/CaptionGenerator";
 import { MockupGenerator } from "@/components/marketing/MockupGenerator";
 import { OutreachGenerator } from "@/components/marketing/OutreachGenerator";
 import { LaunchCopyGenerator } from "@/components/marketing/LaunchCopyGenerator";
-import { ThreadBuilder } from "@/components/marketing/ThreadBuilder";
+import { PlatformPostMaker } from "@/components/marketing/PlatformPostMaker";
+import { XPostMaker } from "@/components/marketing/XPostMaker";
 import { SEOGenerator } from "@/components/marketing/SEOGenerator";
 import { AdCopyGenerator } from "@/components/marketing/AdCopyGenerator";
 import { LandingCopyGenerator } from "@/components/marketing/LandingCopyGenerator";
@@ -20,7 +21,8 @@ const TABS = [
   { value: "launch", label: "Launch", icon: Rocket },
   { value: "directories", label: "Directories", icon: FolderOpen },
   { value: "growth", label: "Growth", icon: Zap },
-  { value: "threads", label: "Threads", icon: Twitter },
+  { value: "reddit", label: "Reddit Posts", icon: MessageCircle },
+  { value: "xposts", label: "X Posts", icon: AtSign },
   { value: "captions", label: "Captions", icon: MessageSquare },
   { value: "carousels", label: "Carousels", icon: Image },
   { value: "seo", label: "SEO", icon: Search },
@@ -60,7 +62,8 @@ export default function Marketing() {
           <TabsContent value="launch"><LaunchCopyGenerator /></TabsContent>
           <TabsContent value="directories"><DirectorySubmitter /></TabsContent>
           <TabsContent value="growth"><GrowthHacks /></TabsContent>
-          <TabsContent value="threads"><ThreadBuilder /></TabsContent>
+          <TabsContent value="reddit"><PlatformPostMaker /></TabsContent>
+          <TabsContent value="xposts"><XPostMaker /></TabsContent>
           <TabsContent value="captions"><CaptionGenerator /></TabsContent>
           <TabsContent value="carousels"><CarouselGenerator /></TabsContent>
           <TabsContent value="seo"><SEOGenerator /></TabsContent>
