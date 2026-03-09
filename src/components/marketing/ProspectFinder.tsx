@@ -292,12 +292,10 @@ export function ProspectFinder() {
             </Button>
           </div>
 
-          <Tabs defaultValue={results.livePosts?.length ? "posts" : "queries"} className="space-y-4">
+          <Tabs defaultValue="posts" className="space-y-4">
             <ScrollArea className="w-full">
               <TabsList className="bg-secondary/50 border border-border inline-flex w-max">
-                {results.livePosts?.length > 0 && (
-                  <TabsTrigger value="posts" className="gap-1.5 px-3"><MessageCircle className="h-4 w-4" /> Live Posts ({results.livePosts.length})</TabsTrigger>
-                )}
+                <TabsTrigger value="posts" className="gap-1.5 px-3"><MessageCircle className="h-4 w-4" /> Live Posts {results.livePosts?.length ? `(${results.livePosts.length})` : ""}</TabsTrigger>
                 <TabsTrigger value="queries" className="gap-1.5 px-3"><Search className="h-4 w-4" /> Search Queries</TabsTrigger>
                 <TabsTrigger value="signals" className="gap-1.5 px-3"><Target className="h-4 w-4" /> ICP Signals</TabsTrigger>
                 <TabsTrigger value="personas" className="gap-1.5 px-3"><Users className="h-4 w-4" /> Personas</TabsTrigger>
