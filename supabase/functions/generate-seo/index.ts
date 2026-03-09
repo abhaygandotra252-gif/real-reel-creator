@@ -21,6 +21,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
+        temperature: 1.1,
         messages: [
           {
             role: "system",

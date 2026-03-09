@@ -106,7 +106,7 @@ export function renderSlide(
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext("2d")!;
-  const palette = PALETTES[paletteIndex % PALETTES.length];
+  const palette = customPalette || PALETTES[paletteIndex % PALETTES.length];
   const pad = width * 0.08;
   const contentWidth = width - pad * 2;
 

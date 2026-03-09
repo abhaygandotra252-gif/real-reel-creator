@@ -35,3 +35,6 @@ verify_jwt = false
 
 [functions.generate-prospect-search]
 verify_jwt = false
+
+[functions.extract-brand-colors]
+verify_jwt = false
