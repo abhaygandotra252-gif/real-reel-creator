@@ -305,52 +305,70 @@ export function ProspectFinder() {
               <ScrollBar orientation="horizontal" />
             </ScrollArea>
 
-            {results.livePosts?.length > 0 && (
-              <TabsContent value="posts">
+            <TabsContent value="posts">
+              {results.livePosts?.length > 0 ? (
                 <div className="space-y-3">
-                  <p className="text-sm text-muted-foreground">Recent posts from people who could be your prospects. Click to open and engage.</p>
+                  <p className="text-sm text-muted-foreground">Real posts from people who could be your prospects. Click to open and engage directly.</p>
                   {results.livePosts.map((post: any, i: number) => {
-                    const postDate = new Date(post.created_utc * 1000);
-                    const daysAgo = Math.floor((Date.now() - postDate.getTime()) / (1000 * 60 * 60 * 24));
-                    const timeLabel = daysAgo === 0 ? "today" : daysAgo === 1 ? "1 day ago" : `${daysAgo} days ago`;
+                    const timeLabel = post.created_utc
+                      ? (() => {
+                          const daysAgo = Math.floor((Date.now() - new Date(post.created_utc * 1000).getTime()) / (1000 * 60 * 60 * 24));
+                          return daysAgo === 0 ? "today" : daysAgo === 1 ? "1 day ago" : `${daysAgo} days ago`;
+                        })()
+                      : null;
                     return (
                       <Card key={i} className="border-border bg-card">
                         <CardContent className="p-3 sm:p-4 space-y-2">
-                          <div className="flex flex-col gap-2">
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="min-w-0 flex-1">
-                                <a href={post.url} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-foreground hover:text-primary transition-colors line-clamp-2">
-                                  {post.title}
+                          <a href={post.url} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-foreground hover:text-primary transition-colors line-clamp-2 block">
+                            {post.title}
+                          </a>
+                          <div className="flex flex-wrap items-center gap-2">
+                            {post.subreddit && <Badge variant="outline" className="text-xs">{post.subreddit}</Badge>}
+                            {post.author && post.author !== "Unknown" && (
+                              post.profileUrl ? (
+                                <a href={post.profileUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline font-medium">
+                                  @{post.author}
                                 </a>
-                                <div className="flex flex-wrap items-center gap-2 mt-1">
-                                  <Badge variant="outline" className="text-xs">{post.subreddit}</Badge>
-                                  <span className="text-xs text-muted-foreground">u/{post.author}</span>
-                                  <span className="text-xs text-muted-foreground">• {timeLabel}</span>
-                                  <span className="text-xs text-muted-foreground">• {post.num_comments} comments</span>
-                                </div>
-                              </div>
-                            </div>
-                            {post.selftext_preview && (
-                              <p className="text-xs text-muted-foreground line-clamp-2">{post.selftext_preview}</p>
+                              ) : (
+                                <span className="text-xs text-muted-foreground">@{post.author}</span>
+                              )
                             )}
-                            <div className="flex gap-2">
-                              <Button variant="secondary" size="sm" asChild className="gap-1.5 flex-1 sm:flex-none">
-                                <a href={post.url} target="_blank" rel="noopener noreferrer">
-                                  <ExternalLink className="h-3.5 w-3.5" /> Open Post
+                            {timeLabel && <span className="text-xs text-muted-foreground">• {timeLabel}</span>}
+                            {post.num_comments != null && <span className="text-xs text-muted-foreground">• {post.num_comments} comments</span>}
+                          </div>
+                          {post.description && (
+                            <p className="text-xs text-muted-foreground line-clamp-2">{post.description}</p>
+                          )}
+                          <div className="flex flex-wrap gap-2">
+                            <Button variant="secondary" size="sm" asChild className="gap-1.5 flex-1 sm:flex-none">
+                              <a href={post.url} target="_blank" rel="noopener noreferrer">
+                                <ExternalLink className="h-3.5 w-3.5" /> Open Post
+                              </a>
+                            </Button>
+                            {post.profileUrl && (
+                              <Button variant="outline" size="sm" asChild className="gap-1.5 flex-1 sm:flex-none">
+                                <a href={post.profileUrl} target="_blank" rel="noopener noreferrer">
+                                  <Users className="h-3.5 w-3.5" /> View Profile
                                 </a>
                               </Button>
-                              <Button variant="ghost" size="sm" onClick={() => copyToClipboard(post.url)} className="gap-1.5">
-                                <Copy className="h-3.5 w-3.5" /> Link
-                              </Button>
-                            </div>
+                            )}
+                            <Button variant="ghost" size="sm" onClick={() => copyToClipboard(post.url)} className="gap-1.5">
+                              <Copy className="h-3.5 w-3.5" />
+                            </Button>
                           </div>
                         </CardContent>
                       </Card>
                     );
                   })}
                 </div>
-              </TabsContent>
-            )}
+              ) : (
+                <Card className="border-border bg-card">
+                  <CardContent className="p-6 text-center text-muted-foreground text-sm">
+                    No live posts found. Use the search queries tab to manually search on {platformLabel}.
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
 
             <TabsContent value="queries">
               <div className="space-y-3">
