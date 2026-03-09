@@ -86,12 +86,20 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number)
   return lines;
 }
 
+export type CustomPalette = {
+  bg: string[];
+  text: string;
+  accent: string;
+  sub: string;
+};
+
 export function renderSlide(
   slide: SlideData,
   slideIndex: number,
   totalSlides: number,
   format: CarouselFormat = "instagram",
   paletteIndex: number = 0,
+  customPalette?: CustomPalette,
 ): string {
   const { width, height } = FORMAT_SIZES[format];
   const canvas = document.createElement("canvas");
