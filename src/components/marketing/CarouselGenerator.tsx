@@ -4,10 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles, Download, RefreshCw, Image } from "lucide-react";
-import { renderAllSlides, type SlideData, type CarouselFormat } from "@/lib/carousel-renderer";
+import { Sparkles, Download, RefreshCw, Image, Palette, Globe, Check, X } from "lucide-react";
+import { renderAllSlides, type SlideData, type CarouselFormat, type CustomPalette } from "@/lib/carousel-renderer";
 
 const THEMES = [
   { value: "product-benefits", label: "Product Benefits" },
@@ -31,6 +33,8 @@ const PALETTES = [
   { label: "Emerald", index: 5 },
 ];
 
+type ExtractedColor = { hex: string; role: string };
+
 export function CarouselGenerator() {
   const { toast } = useToast();
   const [productId, setProductId] = useState("");
@@ -41,6 +45,14 @@ export function CarouselGenerator() {
   const [slides, setSlides] = useState<SlideData[]>([]);
   const [renderedImages, setRenderedImages] = useState<string[]>([]);
 
+  // Brand colors state
+  const [useBrandColors, setUseBrandColors] = useState(false);
+  const [brandUrl, setBrandUrl] = useState("");
+  const [extractedColors, setExtractedColors] = useState<ExtractedColor[]>([]);
+  const [isExtracting, setIsExtracting] = useState(false);
+  const [colorsConfirmed, setColorsConfirmed] = useState(false);
+  const [manualColors, setManualColors] = useState<string[]>(["#6C3CE1", "#FFFFFF", "#FFD93D", "#E0D4FA"]);
+
   const { data: products } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
@@ -49,10 +61,50 @@ export function CarouselGenerator() {
     },
   });
 
+  const buildCustomPalette = (): CustomPalette | undefined => {
+    if (!useBrandColors || !colorsConfirmed) return undefined;
+    const colors = extractedColors.length > 0
+      ? extractedColors.map(c => c.hex)
+      : manualColors;
+    if (colors.length < 2) return undefined;
+    return {
+      bg: [colors[0], colors[1] || colors[0]],
+      text: colors.find((_, i) => extractedColors[i]?.role === "text") || "#FFFFFF",
+      accent: colors[2] || colors[0],
+      sub: colors[3] || "#CCCCCC",
+    };
+  };
+
+  const handleExtractColors = async () => {
+    if (!brandUrl.trim()) {
+      toast({ title: "Enter a website URL", variant: "destructive" });
+      return;
+    }
+    setIsExtracting(true);
+    setColorsConfirmed(false);
+    try {
+      const { data, error } = await supabase.functions.invoke("extract-brand-colors", {
+        body: { url: brandUrl },
+      });
+      if (error) throw error;
+      if (data.error) throw new Error(data.error);
+      setExtractedColors(data.colors || []);
+      toast({ title: "Colors extracted — confirm before generating" });
+    } catch (err: any) {
+      toast({ title: "Extraction failed", description: err.message, variant: "destructive" });
+    } finally {
+      setIsExtracting(false);
+    }
+  };
+
   const handleGenerate = async () => {
     const product = products?.find((p) => p.id === productId);
     if (!product) {
       toast({ title: "Select a product first", variant: "destructive" });
+      return;
+    }
+    if (useBrandColors && !colorsConfirmed) {
+      toast({ title: "Please confirm your color palette first", variant: "destructive" });
       return;
     }
     setIsGenerating(true);
@@ -72,7 +124,8 @@ export function CarouselGenerator() {
 
       const slideData: SlideData[] = data.slides;
       setSlides(slideData);
-      const images = renderAllSlides(slideData, format, paletteIndex);
+      const customPalette = buildCustomPalette();
+      const images = renderAllSlides(slideData, format, paletteIndex, customPalette);
       setRenderedImages(images);
       toast({ title: "Carousel generated" });
     } catch (err: any) {
@@ -84,7 +137,8 @@ export function CarouselGenerator() {
 
   const rerender = () => {
     if (slides.length) {
-      setRenderedImages(renderAllSlides(slides, format, paletteIndex));
+      const customPalette = buildCustomPalette();
+      setRenderedImages(renderAllSlides(slides, format, paletteIndex, customPalette));
     }
   };
 
@@ -137,28 +191,127 @@ export function CarouselGenerator() {
               </Select>
             </div>
 
-            <div>
-              <Label>Color Palette</Label>
-              <div className="mt-2 grid grid-cols-3 gap-2">
-                {PALETTES.map((p) => (
-                  <button
-                    key={p.index}
-                    onClick={() => { setPaletteIndex(p.index); if (slides.length) rerender(); }}
-                    className={`rounded-lg border px-3 py-2 text-xs font-medium transition-all ${
-                      paletteIndex === p.index
-                        ? "border-primary bg-primary/10 text-foreground"
-                        : "border-border bg-secondary/50 text-muted-foreground hover:border-primary/30"
-                    }`}
-                  >
-                    {p.label}
-                  </button>
-                ))}
+            {/* Brand Colors Toggle */}
+            <div className="flex items-center justify-between rounded-lg border border-border p-3">
+              <div className="flex items-center gap-2">
+                <Palette className="h-4 w-4 text-primary" />
+                <Label className="cursor-pointer" htmlFor="brand-colors-toggle">Use Brand Colors</Label>
               </div>
+              <Switch
+                id="brand-colors-toggle"
+                checked={useBrandColors}
+                onCheckedChange={(checked) => {
+                  setUseBrandColors(checked);
+                  if (!checked) {
+                    setColorsConfirmed(false);
+                    setExtractedColors([]);
+                  }
+                }}
+              />
             </div>
+
+            {useBrandColors && (
+              <div className="space-y-3 rounded-lg border border-border p-3">
+                <div className="space-y-2">
+                  <Label className="text-xs text-muted-foreground">Enter your website URL to extract brand colors</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="https://yoursite.com"
+                      value={brandUrl}
+                      onChange={(e) => setBrandUrl(e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={handleExtractColors}
+                      disabled={isExtracting}
+                      className="gap-1 shrink-0"
+                    >
+                      {isExtracting ? <RefreshCw className="h-3 w-3 animate-spin" /> : <Globe className="h-3 w-3" />}
+                      Extract
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Manual color inputs */}
+                <div className="space-y-2">
+                  <Label className="text-xs text-muted-foreground">Or enter colors manually</Label>
+                  <div className="flex gap-2 flex-wrap">
+                    {manualColors.map((color, i) => (
+                      <div key={i} className="flex items-center gap-1">
+                        <input
+                          type="color"
+                          value={color}
+                          onChange={(e) => {
+                            const updated = [...manualColors];
+                            updated[i] = e.target.value;
+                            setManualColors(updated);
+                            setExtractedColors([]);
+                            setColorsConfirmed(false);
+                          }}
+                          className="h-8 w-8 cursor-pointer rounded border border-border"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Color confirmation */}
+                {(extractedColors.length > 0 || manualColors.length > 0) && !colorsConfirmed && (
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium text-foreground">Confirm this palette:</Label>
+                    <div className="flex items-center gap-2">
+                      {(extractedColors.length > 0 ? extractedColors.map(c => c.hex) : manualColors).map((hex, i) => (
+                        <div key={i} className="text-center">
+                          <div className="h-10 w-10 rounded-lg border border-border shadow-sm" style={{ backgroundColor: hex }} />
+                          <span className="text-[10px] text-muted-foreground mt-1 block">{hex}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="default" className="gap-1" onClick={() => { setColorsConfirmed(true); toast({ title: "Colors confirmed" }); }}>
+                        <Check className="h-3 w-3" /> Use these colors
+                      </Button>
+                      <Button size="sm" variant="ghost" className="gap-1" onClick={() => { setExtractedColors([]); setColorsConfirmed(false); }}>
+                        <X className="h-3 w-3" /> Reset
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {colorsConfirmed && (
+                  <div className="flex items-center gap-2 text-xs text-primary">
+                    <Check className="h-3 w-3" /> Brand colors confirmed
+                  </div>
+                )}
+              </div>
+            )}
+
+            {!useBrandColors && (
+              <div>
+                <Label>Color Palette</Label>
+                <div className="mt-2 grid grid-cols-3 gap-2">
+                  {PALETTES.map((p) => (
+                    <button
+                      key={p.index}
+                      onClick={() => { setPaletteIndex(p.index); if (slides.length) rerender(); }}
+                      className={`rounded-lg border px-3 py-2 text-xs font-medium transition-all ${
+                        paletteIndex === p.index
+                          ? "border-primary bg-primary/10 text-foreground"
+                          : "border-border bg-secondary/50 text-muted-foreground hover:border-primary/30"
+                      }`}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <Button
               onClick={handleGenerate}
-              disabled={isGenerating || !productId}
+              disabled={isGenerating || !productId || (useBrandColors && !colorsConfirmed)}
               className="w-full gradient-primary border-0 gap-2 h-12"
             >
               {isGenerating ? <><RefreshCw className="h-5 w-5 animate-spin" /> Generating...</> : <><Sparkles className="h-5 w-5" /> Generate Carousel</>}

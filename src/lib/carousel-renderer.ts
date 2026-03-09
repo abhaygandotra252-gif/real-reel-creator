@@ -185,6 +185,7 @@ export function renderAllSlides(
   slides: SlideData[],
   format: CarouselFormat = "instagram",
   paletteIndex: number = 0,
+  customPalette?: CustomPalette,
 ): string[] {
-  return slides.map((slide, i) => renderSlide(slide, i, slides.length, format, paletteIndex));
+  return slides.map((slide, i) => renderSlide(slide, i, slides.length, format, paletteIndex, customPalette));
 }

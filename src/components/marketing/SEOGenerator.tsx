@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles, Copy, RefreshCw, Search, FileText, Image as ImageIcon, Globe } from "lucide-react";
+import { Sparkles, Copy, RefreshCw, Search, FileText, Image as ImageIcon, Globe, FileDown } from "lucide-react";
+import { printAsPdf } from "@/lib/pdf-export";
 
 type BlogIdea = { title: string; target_keyword: string; outline: string[] };
 type SEOData = {
@@ -48,6 +49,20 @@ export function SEOGenerator() {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast({ title: "Copied to clipboard" });
+  };
+
+  const handleDownloadBlogPdf = () => {
+    if (!seoData?.blog_ideas?.length) return;
+    let html = "";
+    seoData.blog_ideas.forEach((blog, i) => {
+      html += `<div class="section">
+        <h2>${i + 1}. ${blog.title}</h2>
+        <p><span class="badge">${blog.target_keyword}</span></p>
+        <h3>Outline</h3>
+        <ul>${blog.outline.map(item => `<li>${item}</li>`).join("")}</ul>
+      </div>`;
+    });
+    printAsPdf("SEO Blog Post Ideas", html);
   };
 
   return (
@@ -140,7 +155,12 @@ export function SEOGenerator() {
             {/* Blog Ideas */}
             <Card className="border-border bg-card">
               <CardContent className="p-4 space-y-3">
-                <div className="flex items-center gap-2"><FileText className="h-4 w-4 text-primary" /><span className="font-display text-sm font-semibold text-foreground">Blog Post Ideas</span></div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2"><FileText className="h-4 w-4 text-primary" /><span className="font-display text-sm font-semibold text-foreground">Blog Post Ideas</span></div>
+                  <Button variant="outline" size="sm" className="gap-1" onClick={handleDownloadBlogPdf}>
+                    <FileDown className="h-3 w-3" /> Download PDF
+                  </Button>
+                </div>
                 {seoData.blog_ideas.map((blog, i) => (
                   <div key={i} className="rounded-lg bg-secondary/50 p-3 space-y-2">
                     <div className="flex items-center justify-between">
