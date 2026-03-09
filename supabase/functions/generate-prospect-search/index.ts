@@ -5,30 +5,138 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// Build platform search URLs
-function buildSearchUrl(platform: string, query: string): string {
-  const q = encodeURIComponent(query);
+// Build profile URL from platform + username
+function buildProfileUrl(platform: string, username: string): string {
+  if (!username) return "";
+  const clean = username.replace(/^[@\/u\/]+/, "").trim();
   switch (platform) {
-    case "twitter": return `https://twitter.com/search?q=${q}&f=live`;
-    case "reddit": return `https://www.reddit.com/search/?q=${q}&sort=new&t=week`;
-    case "linkedin": return `https://www.linkedin.com/search/results/content/?keywords=${q}&sortBy=%22date_posted%22`;
-    case "quora": return `https://www.quora.com/search?q=${q}`;
-    case "indie_hackers": return `https://www.indiehackers.com/search?q=${q}`;
+    case "twitter": return `https://twitter.com/${clean}`;
+    case "reddit": return `https://www.reddit.com/user/${clean}`;
+    case "linkedin": return `https://www.linkedin.com/in/${clean}`;
+    case "quora": return `https://www.quora.com/profile/${clean}`;
+    case "indie_hackers": return `https://www.indiehackers.com/${clean}`;
     default: return "";
   }
 }
 
-// Fetch real recent posts from Reddit public JSON API
+// Fetch real posts via Firecrawl search
+async function fetchLivePosts(platform: string, queries: string[], productContext: string): Promise<any[]> {
+  const FIRECRAWL_API_KEY = Deno.env.get("FIRECRAWL_API_KEY");
+  if (!FIRECRAWL_API_KEY) {
+    console.error("FIRECRAWL_API_KEY not configured, falling back to Reddit API");
+    if (platform === "reddit") return fetchRedditPosts(queries);
+    return [];
+  }
+
+  const siteMap: Record<string, string> = {
+    twitter: "site:twitter.com OR site:x.com",
+    reddit: "site:reddit.com",
+    linkedin: "site:linkedin.com",
+    quora: "site:quora.com",
+    indie_hackers: "site:indiehackers.com",
+  };
+
+  const siteFilter = siteMap[platform] || "";
+  const posts: any[] = [];
+  const seenUrls = new Set<string>();
+
+  // Use top 3 queries to search
+  for (const query of queries.slice(0, 3)) {
+    try {
+      const searchQuery = `${query} ${siteFilter}`;
+      const res = await fetch("https://api.firecrawl.dev/v1/search", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${FIRECRAWL_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: searchQuery,
+          limit: 8,
+          tbs: "qdr:w", // last week only
+        }),
+      });
+
+      if (!res.ok) {
+        console.error(`Firecrawl search failed for "${query}":`, res.status);
+        continue;
+      }
+
+      const data = await res.json();
+      const results = data?.data || [];
+
+      for (const result of results) {
+        if (!result.url || seenUrls.has(result.url)) continue;
+        seenUrls.add(result.url);
+
+        // Extract author from URL patterns
+        let author = "";
+        let profileUrl = "";
+        const url = result.url;
+
+        if (platform === "reddit") {
+          const authorMatch = url.match(/reddit\.com\/r\/\w+\/comments\/\w+/) 
+            || result.description?.match(/by\s+(u\/\w+)/);
+          if (result.description) {
+            const byMatch = result.description.match(/(?:by|posted by|from)\s+(?:u\/)?(\w+)/i);
+            if (byMatch) {
+              author = byMatch[1];
+              profileUrl = buildProfileUrl("reddit", author);
+            }
+          }
+        } else if (platform === "twitter") {
+          const twitterMatch = url.match(/(?:twitter|x)\.com\/(\w+)\/status/);
+          if (twitterMatch) {
+            author = twitterMatch[1];
+            profileUrl = buildProfileUrl("twitter", author);
+          }
+        } else if (platform === "linkedin") {
+          const linkedinMatch = url.match(/linkedin\.com\/(?:in|posts)\/([^\/\?]+)/);
+          if (linkedinMatch) {
+            author = linkedinMatch[1];
+            profileUrl = buildProfileUrl("linkedin", author);
+          }
+        } else if (platform === "quora") {
+          const quoraMatch = url.match(/quora\.com\/profile\/([^\/\?]+)/);
+          if (quoraMatch) {
+            author = quoraMatch[1];
+            profileUrl = buildProfileUrl("quora", author);
+          }
+        } else if (platform === "indie_hackers") {
+          const ihMatch = url.match(/indiehackers\.com\/([^\/\?]+)/);
+          if (ihMatch && ihMatch[1] !== "post") {
+            author = ihMatch[1];
+            profileUrl = buildProfileUrl("indie_hackers", author);
+          }
+        }
+
+        posts.push({
+          title: result.title || "Untitled post",
+          url: result.url,
+          description: (result.description || "").slice(0, 300),
+          author: author || "Unknown",
+          profileUrl,
+          query_matched: query,
+          platform,
+        });
+      }
+    } catch (e) {
+      console.error(`Firecrawl search error for "${query}":`, e);
+    }
+  }
+
+  return posts.slice(0, 20);
+}
+
+// Fallback: Reddit public JSON API
 async function fetchRedditPosts(queries: string[]): Promise<any[]> {
   const posts: any[] = [];
   const seen = new Set<string>();
 
   for (const query of queries.slice(0, 4)) {
     try {
-      const url = `https://www.reddit.com/search.json?q=${encodeURIComponent(query)}&sort=new&t=month&limit=5`;
-      const res = await fetch(url, {
-        headers: { "User-Agent": "ProspectFinder/1.0" },
-      });
+      const url = `https://www.reddit.com/search.json?q=${encodeURIComponent(query)}&sort=new&t=week&limit=5`;
+      const res = await fetch(url, { headers: { "User-Agent": "ProspectFinder/1.0" } });
       if (!res.ok) continue;
       const data = await res.json();
       const children = data?.data?.children || [];
@@ -38,23 +146,22 @@ async function fetchRedditPosts(queries: string[]): Promise<any[]> {
         seen.add(post.id);
         posts.push({
           title: post.title,
-          subreddit: post.subreddit_name_prefixed,
           url: `https://www.reddit.com${post.permalink}`,
+          description: (post.selftext || "").slice(0, 300),
           author: post.author,
+          profileUrl: buildProfileUrl("reddit", post.author),
+          query_matched: query,
+          platform: "reddit",
+          subreddit: post.subreddit_name_prefixed,
           score: post.score,
           num_comments: post.num_comments,
           created_utc: post.created_utc,
-          selftext_preview: (post.selftext || "").slice(0, 200),
-          query_matched: query,
         });
       }
-    } catch {
-      // skip failed queries
-    }
+    } catch { /* skip */ }
   }
 
-  // Sort by recency, limit to 15
-  posts.sort((a, b) => b.created_utc - a.created_utc);
+  posts.sort((a, b) => (b.created_utc || 0) - (a.created_utc || 0));
   return posts.slice(0, 15);
 }
 
@@ -66,8 +173,7 @@ serve(async (req) => {
 
     if (!productName || !platform) {
       return new Response(JSON.stringify({ error: "Product name and platform are required" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
@@ -75,41 +181,41 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const platformInstructions: Record<string, string> = {
-      "twitter": `Generate simple search terms and phrases to type into Twitter/X search bar. Just plain words and short phrases someone can copy-paste directly into the search box. Example: "struggling with invoicing freelance" or "need a better CRM".`,
-      "reddit": `Generate simple search terms to type into Reddit's search bar. Just plain phrases. Include which subreddits to check. Example: "best tool for managing clients" or "tired of spreadsheets".`,
-      "linkedin": `Generate simple search terms to type into LinkedIn's search bar. Just job titles, keywords, and short phrases. Example: "freelance designer" or "startup founder SaaS".`,
-      "quora": `Generate simple search terms to type into Quora's search bar. Just questions and phrases people would search. Example: "how to manage freelance clients" or "best invoicing software".`,
-      "indie_hackers": `Generate simple search terms to type into Indie Hackers search. Just plain phrases and keywords. Example: "looking for feedback on my SaaS" or "struggling with customer acquisition".`,
+      twitter: `Generate simple search terms to find real tweets from people who have the problem this product solves. Plain phrases only.`,
+      reddit: `Generate simple search terms to find real Reddit posts from people struggling with problems this product solves. Plain phrases only.`,
+      linkedin: `Generate simple search terms to find LinkedIn posts from professionals discussing problems this product solves. Plain phrases only.`,
+      quora: `Generate simple search terms to find Quora questions from people asking about problems this product solves. Plain phrases only.`,
+      indie_hackers: `Generate simple search terms to find Indie Hackers posts from founders discussing problems this product solves. Plain phrases only.`,
     };
 
-    const systemPrompt = `You are a B2B growth strategist who finds ideal customers on social platforms. Direct, no-nonsense tone. No emojis. No filler.
+    const systemPrompt = `You are a B2B growth strategist. Direct, no-nonsense.
 
 Your task: Generate a prospect-finding playbook for ${platform}.
 
-CRITICAL RULE FOR SEARCH QUERIES: Every search query must be a simple phrase that someone can copy and paste directly into the platform's search bar. No advanced search operators, no filters, no Boolean logic, no quotation marks wrapping phrases, no colons. Just plain everyday words and short phrases.
+CRITICAL: Every search query must be a simple phrase — NO operators, NO filters, NO quotes, NO colons. Just plain words someone would type into a search bar.
 
 ${platformInstructions[platform] || ""}
 
-Return a JSON object with this exact structure:
+Return a JSON object:
 {
   "searchQueries": [
-    { "query": "the exact simple search term to paste", "description": "what this finds", "expectedResults": "what kind of results this surfaces" }
+    { "query": "simple search phrase", "description": "what this finds", "expectedResults": "what kind of results" }
   ],
   "icpSignals": [
-    { "signal": "what to look for", "why": "why this indicates they're a prospect", "priority": "high | medium | low" }
+    { "signal": "what to look for", "why": "why this matters", "priority": "high | medium | low" }
   ],
   "prospectPersonas": [
-    { "name": "Fictional Name", "title": "Their role", "background": "2 sentence description", "painPoints": ["pain 1", "pain 2"], "whereToFind": "where on the platform", "typicalPost": "example post they'd write" }
+    { "name": "Name", "title": "Role", "background": "2 sentences", "painPoints": ["pain 1"], "whereToFind": "where on platform", "typicalPost": "example post" }
   ],
   "dmTemplates": [
-    { "scenario": "when to use this", "subject": "subject line if applicable", "message": "the message", "followUp": "follow-up if no reply" }
+    { "scenario": "when to use", "subject": "subject if applicable", "message": "the message", "followUp": "follow-up" }
   ],
   "engagementPlaybook": [
     { "step": 1, "action": "what to do", "timing": "when", "details": "instructions" }
   ]
 }
 
-Generate 5-8 search queries (SIMPLE PHRASES ONLY), 5-7 ICP signals, 5 personas, 3 DM templates (value-first, never salesy), and a 5-step engagement playbook. First DM must never mention pricing or ask for a call.`;
+Generate 5-8 search queries, 5 ICP signals, 4 personas, 3 DM templates, and a 5-step playbook. Session seed: ${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
     const userPrompt = `Product: ${productName}
 Description: ${productDescription || "Not provided"}
@@ -119,7 +225,7 @@ Key Benefits: ${benefits?.join(", ") || "Not provided"}
 Platform: ${platform}
 ${customIcp ? `Additional ICP Criteria: ${customIcp}` : ""}
 
-Generate a complete prospect-finding playbook for this product on ${platform}.`;
+Generate a prospect-finding playbook for this product on ${platform}.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -131,7 +237,7 @@ Generate a complete prospect-finding playbook for this product on ${platform}.`;
         model: "google/gemini-2.5-flash",
         temperature: 1.2,
         messages: [
-          { role: "system", content: `${systemPrompt}\n\nIMPORTANT: Generate completely unique and creative results every time. Do not repeat patterns from previous generations. Session seed: ${Date.now()}-${Math.random().toString(36).slice(2)}` },
+          { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
         max_tokens: 8000,
@@ -149,8 +255,6 @@ Generate a complete prospect-finding playbook for this product on ${platform}.`;
           status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      const errText = await response.text();
-      console.error("AI gateway error:", response.status, errText);
       throw new Error("AI gateway error");
     }
 
@@ -160,19 +264,14 @@ Generate a complete prospect-finding playbook for this product on ${platform}.`;
     let parsed;
     try {
       let cleaned = content.replace(/```json\s*/g, "").replace(/```\s*/g, "");
-      cleaned = cleaned.replace(/(["\d\]}])\s*[a-zA-Z]{1,5}\s+(\[{"])/g, "$1 $2");
       const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        parsed = JSON.parse(jsonMatch[0]);
-      }
+      if (jsonMatch) parsed = JSON.parse(jsonMatch[0]);
     } catch {
       try {
         const stripped = content.replace(/[^\x20-\x7E\n\r\t]/g, "");
         const jsonMatch = stripped.match(/\{[\s\S]*\}/);
         parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
-      } catch {
-        parsed = null;
-      }
+      } catch { parsed = null; }
     }
 
     if (!parsed) {
@@ -181,21 +280,14 @@ Generate a complete prospect-finding playbook for this product on ${platform}.`;
       });
     }
 
-    // Add clickable search URLs to each query
-    if (parsed.searchQueries) {
-      parsed.searchQueries = parsed.searchQueries.map((q: any) => ({
-        ...q,
-        searchUrl: buildSearchUrl(platform, q.query),
-      }));
-    }
-
-    // For Reddit, fetch real recent posts
-    if (platform === "reddit" && parsed.searchQueries?.length) {
+    // Fetch live posts using Firecrawl (or Reddit fallback)
+    if (parsed.searchQueries?.length) {
       try {
         const queries = parsed.searchQueries.map((q: any) => q.query);
-        parsed.livePosts = await fetchRedditPosts(queries);
+        const productContext = `${productName} - ${productDescription || ""}`;
+        parsed.livePosts = await fetchLivePosts(platform, queries, productContext);
       } catch (e) {
-        console.error("Failed to fetch Reddit posts:", e);
+        console.error("Failed to fetch live posts:", e);
         parsed.livePosts = [];
       }
     }
