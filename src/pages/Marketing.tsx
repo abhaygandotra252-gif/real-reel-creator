@@ -62,7 +62,8 @@ export default function Marketing() {
           <TabsContent value="launch"><LaunchCopyGenerator /></TabsContent>
           <TabsContent value="directories"><DirectorySubmitter /></TabsContent>
           <TabsContent value="growth"><GrowthHacks /></TabsContent>
-          <TabsContent value="threads"><ThreadBuilder /></TabsContent>
+          <TabsContent value="reddit"><PlatformPostMaker /></TabsContent>
+          <TabsContent value="xposts"><XPostMaker /></TabsContent>
           <TabsContent value="captions"><CaptionGenerator /></TabsContent>
           <TabsContent value="carousels"><CarouselGenerator /></TabsContent>
           <TabsContent value="seo"><SEOGenerator /></TabsContent>

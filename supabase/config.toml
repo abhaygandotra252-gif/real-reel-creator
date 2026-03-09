@@ -15,7 +15,10 @@ verify_jwt = false
 [functions.generate-launch-copy]
 verify_jwt = false
 
-[functions.generate-thread]
+[functions.generate-platform-posts]
+verify_jwt = false
+
+[functions.generate-x-posts]
 verify_jwt = false
 
 [functions.generate-seo]
