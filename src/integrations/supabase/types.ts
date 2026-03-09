@@ -17,6 +17,7 @@ export type Database = {
       products: {
         Row: {
           benefits: string[] | null
+          brand_colors: string[] | null
           created_at: string
           description: string | null
           id: string
@@ -30,6 +31,7 @@ export type Database = {
         }
         Insert: {
           benefits?: string[] | null
+          brand_colors?: string[] | null
           created_at?: string
           description?: string | null
           id?: string
@@ -43,6 +45,7 @@ export type Database = {
         }
         Update: {
           benefits?: string[] | null
+          brand_colors?: string[] | null
           created_at?: string
           description?: string | null
           id?: string

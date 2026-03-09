@@ -31,7 +31,7 @@ Description: ${product_description || "N/A"}
 Key Features: ${(key_features || []).join(", ") || "N/A"}
 Benefits: ${(benefits || []).join(", ") || "N/A"}`,
           },
-          { role: "user", content: `Generate SEO content for "${product_name}": meta title (<60 chars), meta description (<160 chars), 5 blog post ideas with outlines, Open Graph text, and 3 alt text suggestions for product images.` },
+          { role: "user", content: `Generate completely fresh and unique SEO content for "${product_name}" (session: ${Date.now()}-${Math.random().toString(36).slice(2)}): meta title (<60 chars), meta description (<160 chars), 5 blog post ideas with outlines, Open Graph text, and 3 alt text suggestions for product images.` },
         ],
         tools: [{
           type: "function",
