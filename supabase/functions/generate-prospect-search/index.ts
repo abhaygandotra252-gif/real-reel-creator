@@ -74,8 +74,9 @@ Generate a complete prospect-finding playbook for this product on ${platform}.`;
       },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
+        temperature: 1.2,
         messages: [
-          { role: "system", content: systemPrompt },
+          { role: "system", content: `${systemPrompt}\n\nIMPORTANT: Generate completely unique and creative results every time. Do not repeat patterns from previous generations. Session seed: ${Date.now()}-${Math.random().toString(36).slice(2)}` },
           { role: "user", content: userPrompt },
         ],
         max_tokens: 8000,
