@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Copy, Search, Users, MessageSquare, Target, ListChecks, ClipboardList, FileDown } from "lucide-react";
+import { Loader2, Copy, Search, Users, MessageSquare, Target, ListChecks, ClipboardList, FileDown, ExternalLink, MessageCircle } from "lucide-react";
 import { printAsPdf } from "@/lib/pdf-export";
 
 type Product = {
@@ -292,9 +292,12 @@ export function ProspectFinder() {
             </Button>
           </div>
 
-          <Tabs defaultValue="queries" className="space-y-4">
+          <Tabs defaultValue={results.livePosts?.length ? "posts" : "queries"} className="space-y-4">
             <ScrollArea className="w-full">
               <TabsList className="bg-secondary/50 border border-border inline-flex w-max">
+                {results.livePosts?.length > 0 && (
+                  <TabsTrigger value="posts" className="gap-1.5 px-3"><MessageCircle className="h-4 w-4" /> Live Posts ({results.livePosts.length})</TabsTrigger>
+                )}
                 <TabsTrigger value="queries" className="gap-1.5 px-3"><Search className="h-4 w-4" /> Search Queries</TabsTrigger>
                 <TabsTrigger value="signals" className="gap-1.5 px-3"><Target className="h-4 w-4" /> ICP Signals</TabsTrigger>
                 <TabsTrigger value="personas" className="gap-1.5 px-3"><Users className="h-4 w-4" /> Personas</TabsTrigger>
@@ -304,6 +307,53 @@ export function ProspectFinder() {
               <ScrollBar orientation="horizontal" />
             </ScrollArea>
 
+            {results.livePosts?.length > 0 && (
+              <TabsContent value="posts">
+                <div className="space-y-3">
+                  <p className="text-sm text-muted-foreground">Recent posts from people who could be your prospects. Click to open and engage.</p>
+                  {results.livePosts.map((post: any, i: number) => {
+                    const postDate = new Date(post.created_utc * 1000);
+                    const daysAgo = Math.floor((Date.now() - postDate.getTime()) / (1000 * 60 * 60 * 24));
+                    const timeLabel = daysAgo === 0 ? "today" : daysAgo === 1 ? "1 day ago" : `${daysAgo} days ago`;
+                    return (
+                      <Card key={i} className="border-border bg-card">
+                        <CardContent className="p-3 sm:p-4 space-y-2">
+                          <div className="flex flex-col gap-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="min-w-0 flex-1">
+                                <a href={post.url} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-foreground hover:text-primary transition-colors line-clamp-2">
+                                  {post.title}
+                                </a>
+                                <div className="flex flex-wrap items-center gap-2 mt-1">
+                                  <Badge variant="outline" className="text-xs">{post.subreddit}</Badge>
+                                  <span className="text-xs text-muted-foreground">u/{post.author}</span>
+                                  <span className="text-xs text-muted-foreground">• {timeLabel}</span>
+                                  <span className="text-xs text-muted-foreground">• {post.num_comments} comments</span>
+                                </div>
+                              </div>
+                            </div>
+                            {post.selftext_preview && (
+                              <p className="text-xs text-muted-foreground line-clamp-2">{post.selftext_preview}</p>
+                            )}
+                            <div className="flex gap-2">
+                              <Button variant="secondary" size="sm" asChild className="gap-1.5 flex-1 sm:flex-none">
+                                <a href={post.url} target="_blank" rel="noopener noreferrer">
+                                  <ExternalLink className="h-3.5 w-3.5" /> Open Post
+                                </a>
+                              </Button>
+                              <Button variant="ghost" size="sm" onClick={() => copyToClipboard(post.url)} className="gap-1.5">
+                                <Copy className="h-3.5 w-3.5" /> Link
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </TabsContent>
+            )}
+
             <TabsContent value="queries">
               <div className="space-y-3">
                 {results.searchQueries?.map((q: any, i: number) => (
@@ -311,9 +361,18 @@ export function ProspectFinder() {
                     <CardContent className="p-3 sm:p-4 space-y-2">
                       <div className="flex flex-col sm:flex-row sm:items-start gap-2">
                         <code className="text-sm font-mono bg-muted px-2 py-1.5 rounded break-all text-foreground flex-1">{q.query}</code>
-                        <Button variant="secondary" size="sm" onClick={() => copyToClipboard(q.query)} className="shrink-0 gap-1.5 w-full sm:w-auto">
-                          <Copy className="h-3.5 w-3.5" /> Copy
-                        </Button>
+                        <div className="flex gap-2 w-full sm:w-auto">
+                          <Button variant="secondary" size="sm" onClick={() => copyToClipboard(q.query)} className="shrink-0 gap-1.5 flex-1 sm:flex-none">
+                            <Copy className="h-3.5 w-3.5" /> Copy
+                          </Button>
+                          {q.searchUrl && (
+                            <Button variant="outline" size="sm" asChild className="shrink-0 gap-1.5 flex-1 sm:flex-none">
+                              <a href={q.searchUrl} target="_blank" rel="noopener noreferrer">
+                                <ExternalLink className="h-3.5 w-3.5" /> Search
+                              </a>
+                            </Button>
+                          )}
+                        </div>
                       </div>
                       <p className="text-sm text-muted-foreground">{q.description}</p>
                     </CardContent>
