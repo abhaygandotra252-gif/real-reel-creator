@@ -86,19 +86,27 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number)
   return lines;
 }
 
+export type CustomPalette = {
+  bg: string[];
+  text: string;
+  accent: string;
+  sub: string;
+};
+
 export function renderSlide(
   slide: SlideData,
   slideIndex: number,
   totalSlides: number,
   format: CarouselFormat = "instagram",
   paletteIndex: number = 0,
+  customPalette?: CustomPalette,
 ): string {
   const { width, height } = FORMAT_SIZES[format];
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext("2d")!;
-  const palette = PALETTES[paletteIndex % PALETTES.length];
+  const palette = customPalette || PALETTES[paletteIndex % PALETTES.length];
   const pad = width * 0.08;
   const contentWidth = width - pad * 2;
 
@@ -177,6 +185,7 @@ export function renderAllSlides(
   slides: SlideData[],
   format: CarouselFormat = "instagram",
   paletteIndex: number = 0,
+  customPalette?: CustomPalette,
 ): string[] {
-  return slides.map((slide, i) => renderSlide(slide, i, slides.length, format, paletteIndex));
+  return slides.map((slide, i) => renderSlide(slide, i, slides.length, format, paletteIndex, customPalette));
 }

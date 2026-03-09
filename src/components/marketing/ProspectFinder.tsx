@@ -9,7 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Copy, Search, Users, MessageSquare, Target, ListChecks, ClipboardList } from "lucide-react";
+import { Loader2, Copy, Search, Users, MessageSquare, Target, ListChecks, ClipboardList, FileDown } from "lucide-react";
+import { printAsPdf } from "@/lib/pdf-export";
 
 type Product = {
   id: string;
@@ -78,6 +79,47 @@ function buildCopyAllText(results: any, platformLabel: string) {
   return text;
 }
 
+function buildPlaybookHtml(results: any, platformLabel: string): string {
+  let html = "";
+
+  if (results.searchQueries?.length) {
+    html += `<h2>Search Queries</h2>`;
+    results.searchQueries.forEach((q: any, i: number) => {
+      html += `<div class="section"><h3>${i + 1}. <code>${q.query}</code></h3><p>${q.description}</p><p><em>Expected: ${q.expectedResults}</em></p></div>`;
+    });
+  }
+
+  if (results.icpSignals?.length) {
+    html += `<h2>ICP Signals</h2>`;
+    results.icpSignals.forEach((s: any) => {
+      html += `<div class="section"><p><strong>${s.signal}</strong> <span class="badge">${s.priority}</span></p><p>${s.why}</p></div>`;
+    });
+  }
+
+  if (results.prospectPersonas?.length) {
+    html += `<h2>Prospect Personas</h2>`;
+    results.prospectPersonas.forEach((p: any) => {
+      html += `<div class="section"><h3>${p.name} — ${p.title}</h3><p>${p.background}</p><p><strong>Pain points:</strong></p><ul>${p.painPoints?.map((pp: string) => `<li>${pp}</li>`).join("") || ""}</ul><p><strong>Where to find:</strong> ${p.whereToFind}</p><p class="quote">"${p.typicalPost}"</p></div>`;
+    });
+  }
+
+  if (results.dmTemplates?.length) {
+    html += `<h2>DM Templates</h2>`;
+    results.dmTemplates.forEach((t: any) => {
+      html += `<div class="section"><p class="badge">${t.scenario}</p>${t.subject ? `<p><strong>Subject:</strong> ${t.subject}</p>` : ""}<p>${t.message}</p><p><em>Follow-up:</em> ${t.followUp}</p></div>`;
+    });
+  }
+
+  if (results.engagementPlaybook?.length) {
+    html += `<h2>Engagement Playbook</h2>`;
+    results.engagementPlaybook.forEach((step: any) => {
+      html += `<div class="section"><h3>Step ${step.step}: ${step.action}</h3><p class="badge">${step.timing}</p><p>${step.details}</p></div>`;
+    });
+  }
+
+  return html;
+}
+
 export function ProspectFinder() {
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState("");
@@ -130,6 +172,12 @@ export function ProspectFinder() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDownloadPdf = () => {
+    if (!results) return;
+    const html = buildPlaybookHtml(results, platformLabel);
+    printAsPdf(`Prospect Playbook — ${platformLabel}`, html);
   };
 
   const platformLabel = PLATFORM_LABELS[platform] || platform;
@@ -222,8 +270,17 @@ export function ProspectFinder() {
             </CardContent>
           </Card>
 
-          {/* Copy All Button */}
-          <div className="flex justify-end">
+          {/* Copy All + Download PDF */}
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDownloadPdf}
+              className="gap-2"
+            >
+              <FileDown className="h-4 w-4" />
+              Download PDF
+            </Button>
             <Button
               variant="outline"
               size="sm"
@@ -354,7 +411,6 @@ export function ProspectFinder() {
                 <CardContent className="p-4 space-y-1">
                   {results.engagementPlaybook?.map((step: any, i: number) => (
                     <div key={i} className="flex gap-4 relative">
-                      {/* Connector line */}
                       {i < (results.engagementPlaybook?.length ?? 0) - 1 && (
                         <div className="absolute left-[18px] top-10 bottom-0 w-px bg-border" />
                       )}
