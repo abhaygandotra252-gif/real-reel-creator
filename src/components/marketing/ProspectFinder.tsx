@@ -9,7 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Copy, Search, Users, MessageSquare, Target, ListChecks, ClipboardList, FileDown, ExternalLink, MessageCircle } from "lucide-react";
+import { Loader2, Copy, Search, Users, MessageSquare, Target, ListChecks, ClipboardList, FileDown, ExternalLink, MessageCircle, Link2, Sparkles } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { printAsPdf } from "@/lib/pdf-export";
 
 type Product = {
