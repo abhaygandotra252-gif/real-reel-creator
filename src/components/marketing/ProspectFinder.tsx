@@ -129,6 +129,11 @@ export function ProspectFinder() {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<any>(null);
 
+  // Reply crafter state
+  const [replyUrl, setReplyUrl] = useState("");
+  const [replyLoading, setReplyLoading] = useState(false);
+  const [replyResults, setReplyResults] = useState<any>(null);
+
   useEffect(() => {
     supabase.from("products").select("id, name, description, target_audience, niche_category, benefits").then(({ data }) => {
       if (data) setProducts(data);
