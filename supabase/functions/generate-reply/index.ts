@@ -83,13 +83,12 @@ serve(async (req) => {
 - Zero emojis. Zero em dashes. Zero colons followed by lists.
 - Never use: "Quick question", "Just wanted to", "I'd love to", "game-changer", "revolutionary", "excited to", "Hey there", "Hope you're doing well"
 - Never start with a compliment that sounds fake
-- Sound like someone who actually uses the product and genuinely wants to help
-- Reference something SPECIFIC from their post/profile. Not vague praise.
-- If it's a post/comment: write a reply that adds value, shares a genuine perspective, and naturally mentions the product ONLY if relevant. Don't force it.
-- If it's a profile: write a DM that references their specific work/interests and connects it to a real problem the product solves
-- The goal is to make them curious enough to check out the product on their own
+- CRITICAL STRUCTURE: Start by engaging with their ACTUAL content. Talk about what they said. Share your perspective on their specific point. Add genuine value or a personal experience related to their topic. Only at the very end, casually and naturally drop a mention of the product as if it's an afterthought — like "btw I've been using X for this" or "something like X helped me with that". It should feel like you remembered it mid-conversation, not like the whole reply was building up to it.
+- The product mention should be MAX 1 sentence at the end. The other 80-90% of the reply must be pure value about THEIR content.
+- If it's a profile DM: talk about their specific work first. Ask a genuine question about something they built or wrote. Then naturally connect it to a problem the product solves — but frame it as sharing something useful, not selling.
 - Write like a real person texting, not a marketer crafting copy
 - 0% plagiarism. Every reply must feel handwritten for this exact person/post.
+- The reader should feel like you genuinely care about their content and the product mention is just you being helpful, not strategic.
 
 Product: ${productName}
 Description: ${productDescription || "Not provided"}
@@ -98,15 +97,15 @@ Key Benefits: ${benefits?.join(", ") || "Not provided"}
 Session: ${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
     const userPrompt = isProfile
-      ? `This is someone's profile page. Write a cold DM to this person that connects their work to the problem ${productName} solves. Make it feel like you actually looked at their profile and found something genuinely interesting.
+      ? `This is someone's profile page. Write a cold DM that starts by referencing something specific they've done or built. Ask a real question about their work. Share a relevant thought. Only at the very end, naturally mention ${productName} as something that connects to what they're doing.
 
 Profile URL: ${url}
 ${authorName ? `Username: ${authorName}` : ""}
 Profile content:
 ${truncatedContent || "Could not scrape profile content. Write a general but specific-sounding DM based on the platform and URL context."}
 
-Generate 2 different DM variations. One shorter (2-3 sentences), one slightly longer (4-5 sentences). Both must sound completely different from each other.`
-      : `This is a post or comment someone wrote. Write a reply that adds genuine value to the conversation and naturally positions ${productName} as helpful IF it's relevant. If the product isn't directly relevant to what they're discussing, just write a genuinely helpful reply without mentioning the product at all.
+Generate 2 DM variations. One shorter (3-4 sentences), one longer (5-6 sentences). In both, the product mention must be the last sentence and feel completely natural — like an afterthought, not the point of the message.`
+      : `This is a post or comment someone wrote. Write a reply that FIRST engages deeply with what they said — share your take, add a personal experience, or build on their point. The reply should work perfectly even without the product mention. Then at the very end, casually drop ${productName} only if it genuinely connects — like "btw" or "fwiw" style, never as the main point.
 
 Post URL: ${url}
 Post title: ${pageTitle || "Unknown"}
@@ -114,7 +113,7 @@ ${authorName ? `Author: ${authorName}` : ""}
 Post content:
 ${truncatedContent || "Could not scrape post content. Write a general but authentic-sounding reply based on the URL and title context."}
 
-Generate 2 reply variations. One that subtly mentions the product (only if natural), and one that's purely value-add without any product mention. Both must sound like a real person wrote them.`;
+Generate 2 reply variations. Both must lead with genuine engagement on their content (80-90% of the reply). The product mention at the end should feel like you just remembered it, not like you planned the whole reply around it.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
