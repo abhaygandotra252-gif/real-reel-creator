@@ -8,7 +8,7 @@ import Products from "./pages/Products";
 import Generate from "./pages/Generate";
 import Scripts from "./pages/Scripts";
 import Marketing from "./pages/Marketing";
-
+import ReplyCrafter from "./pages/ReplyCrafter";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,7 +25,7 @@ const App = () => (
           <Route path="/generate" element={<Generate />} />
           <Route path="/scripts" element={<Scripts />} />
           <Route path="/marketing" element={<Marketing />} />
-          
+          <Route path="/reply-crafter" element={<ReplyCrafter />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

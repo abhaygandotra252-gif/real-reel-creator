@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Copy, Search, Users, MessageSquare, Target, ListChecks, ClipboardList, FileDown, ExternalLink, MessageCircle, Link2, Sparkles } from "lucide-react";
+import { Loader2, Copy, Search, Users, MessageSquare, Target, ListChecks, ClipboardList, FileDown, ExternalLink, MessageCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { printAsPdf } from "@/lib/pdf-export";
 
@@ -129,10 +129,6 @@ export function ProspectFinder() {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<any>(null);
 
-  // Reply crafter state
-  const [replyUrl, setReplyUrl] = useState("");
-  const [replyLoading, setReplyLoading] = useState(false);
-  const [replyResults, setReplyResults] = useState<any>(null);
 
   useEffect(() => {
     supabase.from("products").select("id, name, description, target_audience, niche_category, benefits").then(({ data }) => {
@@ -186,34 +182,6 @@ export function ProspectFinder() {
     printAsPdf(`Prospect Playbook — ${platformLabel}`, html);
   };
 
-  const handleCraftReply = async () => {
-    if (!replyUrl || !selectedProduct) {
-      toast.error("Paste a URL and select a product first");
-      return;
-    }
-    const product = products.find((p) => p.id === selectedProduct);
-    if (!product) return;
-
-    setReplyLoading(true);
-    setReplyResults(null);
-    try {
-      const { data, error } = await supabase.functions.invoke("generate-reply", {
-        body: {
-          url: replyUrl,
-          productName: product.name,
-          productDescription: product.description,
-          benefits: product.benefits,
-        },
-      });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      setReplyResults(data);
-    } catch (err: any) {
-      toast.error(err.message || "Failed to craft reply");
-    } finally {
-      setReplyLoading(false);
-    }
-  };
 
   const platformLabel = PLATFORM_LABELS[platform] || platform;
 
@@ -542,65 +510,6 @@ export function ProspectFinder() {
         </div>
       )}
 
-      {/* Reply Crafter */}
-      <Card className="border-border bg-card">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            Reply Crafter
-          </CardTitle>
-          <CardDescription>
-            Paste any post, comment, or profile URL. Get a humanized reply that sounds like you actually wrote it.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {!selectedProduct && (
-            <p className="text-sm text-destructive">Select a product above first so the reply references your product naturally.</p>
-          )}
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Input
-              placeholder="Paste a post or profile URL..."
-              value={replyUrl}
-              onChange={(e) => setReplyUrl(e.target.value)}
-              className="flex-1"
-            />
-            <Button
-              onClick={handleCraftReply}
-              disabled={replyLoading || !replyUrl || !selectedProduct}
-              className="gap-2 shrink-0"
-            >
-              {replyLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Crafting...</> : <><Link2 className="h-4 w-4" /> Craft Reply</>}
-            </Button>
-          </div>
-
-          {replyResults?.replies?.length > 0 && (
-            <div className="space-y-3">
-              {replyResults.platform_detected && (
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline">{replyResults.platform_detected}</Badge>
-                  <Badge variant={replyResults.is_profile ? "secondary" : "default"}>
-                    {replyResults.is_profile ? "Profile DM" : "Post Reply"}
-                  </Badge>
-                </div>
-              )}
-              {replyResults.replies.map((reply: any, i: number) => (
-                <Card key={i} className="border-border bg-muted/30">
-                  <CardContent className="p-3 sm:p-4 space-y-2">
-                    <div className="flex items-start justify-between gap-2">
-                      <Badge variant="outline" className="text-xs shrink-0">{reply.label}</Badge>
-                      <Button variant="secondary" size="sm" onClick={() => copyToClipboard(reply.content)} className="gap-1.5 shrink-0">
-                        <Copy className="h-3.5 w-3.5" /> Copy
-                      </Button>
-                    </div>
-                    <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">{reply.content}</p>
-                    <p className="text-xs text-muted-foreground">References: {reply.context_used}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
     </div>
   );
 }
