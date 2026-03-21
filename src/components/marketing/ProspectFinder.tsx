@@ -182,34 +182,6 @@ export function ProspectFinder() {
     printAsPdf(`Prospect Playbook — ${platformLabel}`, html);
   };
 
-  const handleCraftReply = async () => {
-    if (!replyUrl || !selectedProduct) {
-      toast.error("Paste a URL and select a product first");
-      return;
-    }
-    const product = products.find((p) => p.id === selectedProduct);
-    if (!product) return;
-
-    setReplyLoading(true);
-    setReplyResults(null);
-    try {
-      const { data, error } = await supabase.functions.invoke("generate-reply", {
-        body: {
-          url: replyUrl,
-          productName: product.name,
-          productDescription: product.description,
-          benefits: product.benefits,
-        },
-      });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      setReplyResults(data);
-    } catch (err: any) {
-      toast.error(err.message || "Failed to craft reply");
-    } finally {
-      setReplyLoading(false);
-    }
-  };
 
   const platformLabel = PLATFORM_LABELS[platform] || platform;
 
