@@ -541,6 +541,66 @@ export function ProspectFinder() {
           </Tabs>
         </div>
       )}
+
+      {/* Reply Crafter */}
+      <Card className="border-border bg-card">
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            Reply Crafter
+          </CardTitle>
+          <CardDescription>
+            Paste any post, comment, or profile URL. Get a humanized reply that sounds like you actually wrote it.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {!selectedProduct && (
+            <p className="text-sm text-destructive">Select a product above first so the reply references your product naturally.</p>
+          )}
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Input
+              placeholder="Paste a post or profile URL..."
+              value={replyUrl}
+              onChange={(e) => setReplyUrl(e.target.value)}
+              className="flex-1"
+            />
+            <Button
+              onClick={handleCraftReply}
+              disabled={replyLoading || !replyUrl || !selectedProduct}
+              className="gap-2 shrink-0"
+            >
+              {replyLoading ? <><Loader2 className="h-4 w-4 animate-spin" /> Crafting...</> : <><Link2 className="h-4 w-4" /> Craft Reply</>}
+            </Button>
+          </div>
+
+          {replyResults?.replies?.length > 0 && (
+            <div className="space-y-3">
+              {replyResults.platform_detected && (
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline">{replyResults.platform_detected}</Badge>
+                  <Badge variant={replyResults.is_profile ? "secondary" : "default"}>
+                    {replyResults.is_profile ? "Profile DM" : "Post Reply"}
+                  </Badge>
+                </div>
+              )}
+              {replyResults.replies.map((reply: any, i: number) => (
+                <Card key={i} className="border-border bg-muted/30">
+                  <CardContent className="p-3 sm:p-4 space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <Badge variant="outline" className="text-xs shrink-0">{reply.label}</Badge>
+                      <Button variant="secondary" size="sm" onClick={() => copyToClipboard(reply.content)} className="gap-1.5 shrink-0">
+                        <Copy className="h-3.5 w-3.5" /> Copy
+                      </Button>
+                    </div>
+                    <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">{reply.content}</p>
+                    <p className="text-xs text-muted-foreground">References: {reply.context_used}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
